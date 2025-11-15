@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletCore.Domain", "Wallet
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletCore.Application", "WalletCore.Application\WalletCore.Application.csproj", "{F8F39876-CC50-436B-8DE7-617420819075}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletCore.Infrastructure", "WalletCore.Infrastructure\WalletCore.Infrastructure.csproj", "{A52AF957-5B8D-4F2E-AD9F-710AB8A854B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F8F39876-CC50-436B-8DE7-617420819075}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8F39876-CC50-436B-8DE7-617420819075}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8F39876-CC50-436B-8DE7-617420819075}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A52AF957-5B8D-4F2E-AD9F-710AB8A854B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A52AF957-5B8D-4F2E-AD9F-710AB8A854B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A52AF957-5B8D-4F2E-AD9F-710AB8A854B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A52AF957-5B8D-4F2E-AD9F-710AB8A854B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
