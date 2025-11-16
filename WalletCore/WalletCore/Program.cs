@@ -1,3 +1,10 @@
+using Microsoft.Extensions.Options;
+using WalletCore.Application;
+using WalletCore.Application.Configuration;
+using WalletCore.Application.HttpClientInfrastructure;
+using WalletCore.Infrastructure;
+using WalletCore.Infrastructure.Configuration;
+
 namespace WalletCore
 {
     public class Program
@@ -7,8 +14,17 @@ namespace WalletCore
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.Configure<ECBClientConfig>(builder.Configuration.GetSection("ECBConfig"));
+            builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("ConnectionStrings"));
 
             builder.Services.AddControllers();
+            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddApplicationServices(builder.Configuration, clients =>
+            {
+                var sp = builder.Services.BuildServiceProvider();
+
+                clients.AddClient(HttpClientsRegistry.ECB(sp.GetRequiredService<IOptions<ECBClientConfig>>()));
+            });
 
             var app = builder.Build();
 

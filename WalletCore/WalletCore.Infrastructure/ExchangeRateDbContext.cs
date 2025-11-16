@@ -12,9 +12,16 @@ namespace WalletCore.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ExchangeRate>()
-                .HasIndex(x => new { x.Date, x.CurrencyCode })
-                .IsUnique();
+            modelBuilder.Entity<ExchangeRate>(entity =>
+            {
+                // Configure Rate precision
+                entity.Property(e => e.Rate)
+                    .HasPrecision(18, 8); // 18 digits total, 6 after decimal
+
+                // Unique index on Date + CurrencyCode
+                entity.HasIndex(e => new { e.Date, e.CurrencyCode })
+                      .IsUnique();
+            });
         }
     }
 }
