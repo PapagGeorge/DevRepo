@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Text;
 using WalletCore.Application.Interfaces;
 using WalletCore.Domain.DBModels;
@@ -16,35 +18,27 @@ namespace WalletCore.Infrastructure.Repositories
 
         public async Task MergeRatesAsync(IEnumerable<ExchangeRate> rates, CancellationToken cancellationToken = default)
         {
-            // Convert the rates to a VALUES block for SQL MERGE
-            var sb = new StringBuilder();
+            // Convert to DataTable for TVP
+            var table = new DataTable();
+            table.Columns.Add("Date", typeof(DateTime));
+            table.Columns.Add("CurrencyCode", typeof(string));
+            table.Columns.Add("Rate", typeof(decimal));
+            table.Columns.Add("UpdatedAt", typeof(DateTime));
 
-            foreach (var r in rates)
+            foreach (var rate in rates)
+                table.Rows.Add(rate.Date.ToDateTime(TimeOnly.MinValue), rate.CurrencyCode, rate.Rate, rate.UpdatedAt);
+
+            var param = new SqlParameter("@Rates", table)
             {
-                sb.AppendLine(
-                    $"({r.Date.ToString("yyyy-MM-dd")}, '{r.CurrencyCode}', {r.Rate}, GETUTCDATE()),"
-                );
-            }
+                SqlDbType = SqlDbType.Structured,
+                TypeName = "ExchangeRateType"
+            };
 
-            // Remove last comma
-            var valuesSql = sb.ToString().TrimEnd(',', '\n', '\r');
-
-            var sql = $@"
-MERGE INTO ExchangeRates AS Target
-USING (VALUES 
-    {valuesSql}
-) AS Source ([Date], [CurrencyCode], [Rate], [UpdatedAt])
-ON Target.[Date] = Source.[Date] AND Target.[CurrencyCode] = Source.[CurrencyCode]
-WHEN MATCHED THEN 
-    UPDATE SET 
-        Target.[Rate] = Source.[Rate],
-        Target.[UpdatedAt] = GETUTCDATE()
-WHEN NOT MATCHED THEN
-    INSERT ([Date], [CurrencyCode], [Rate], [UpdatedAt])
-    VALUES (Source.[Date], Source.[CurrencyCode], Source.[Rate], GETUTCDATE());
-";
-
-            await _dbContext.Database.ExecuteSqlRawAsync(sql, cancellationToken);
+            await _dbContext.Database.ExecuteSqlRawAsync(
+                "EXEC MergeExchangeRates @Rates",
+                param,
+                cancellationToken
+            );
         }
     }
 }

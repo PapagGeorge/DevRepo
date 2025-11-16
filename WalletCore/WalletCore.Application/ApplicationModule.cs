@@ -17,6 +17,7 @@ namespace WalletCore.Application
             configure(builder);
 
             services.AddSingleton<IGenericHttpClientFactory, GenericHttpClientFactory>();
+            services.AddScoped<ICacheService, CacheService>();
             // Register the raw HTTP service
             services.AddScoped<EcbService>();
 

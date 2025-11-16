@@ -5,7 +5,7 @@ namespace WalletCore.Application.HttpClientInfrastructure
 {
     public static class HttpClientsRegistry
     {
-        public static HttpClientRegistration ECB(IOptions<ECBClientConfig> options)
+        public static HttpClientRegistration ECBClientRegistry(IOptions<ECBClientConfig> options)
         {
             var config = options.Value;
 

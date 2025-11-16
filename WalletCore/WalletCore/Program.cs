@@ -16,6 +16,7 @@ namespace WalletCore
             // Add services to the container.
             builder.Services.Configure<ECBClientConfig>(builder.Configuration.GetSection("ECBConfig"));
             builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("ConnectionStrings"));
+            builder.Services.Configure<RedisOptions>(builder.Configuration.GetSection("Redis"));
 
             builder.Services.AddControllers();
             builder.Services.AddInfrastructure(builder.Configuration);
@@ -23,7 +24,7 @@ namespace WalletCore
             {
                 var sp = builder.Services.BuildServiceProvider();
 
-                clients.AddClient(HttpClientsRegistry.ECB(sp.GetRequiredService<IOptions<ECBClientConfig>>()));
+                clients.AddClient(HttpClientsRegistry.ECBClientRegistry(sp.GetRequiredService<IOptions<ECBClientConfig>>()));
             });
 
             var app = builder.Build();
