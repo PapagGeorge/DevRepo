@@ -20,13 +20,14 @@ namespace WalletCore.Infrastructure.Repositories
         {
             // Convert to DataTable for TVP
             var table = new DataTable();
+            table.Columns.Add("Id", typeof(Guid));
             table.Columns.Add("Date", typeof(DateTime));
             table.Columns.Add("CurrencyCode", typeof(string));
             table.Columns.Add("Rate", typeof(decimal));
             table.Columns.Add("UpdatedAt", typeof(DateTime));
 
             foreach (var rate in rates)
-                table.Rows.Add(rate.Date.ToDateTime(TimeOnly.MinValue), rate.CurrencyCode, rate.Rate, rate.UpdatedAt);
+                table.Rows.Add(rate.Id, rate.Date.ToDateTime(TimeOnly.MinValue), rate.CurrencyCode, rate.Rate, rate.UpdatedAt);
 
             var param = new SqlParameter("@Rates", table)
             {
@@ -34,11 +35,7 @@ namespace WalletCore.Infrastructure.Repositories
                 TypeName = "ExchangeRateType"
             };
 
-            await _dbContext.Database.ExecuteSqlRawAsync(
-                "EXEC MergeExchangeRates @Rates",
-                param,
-                cancellationToken
-            );
+            await _dbContext.Database.ExecuteSqlRawAsync("EXEC MergeExchangeRates @Rates", new[] { param }, cancellationToken: cancellationToken);
         }
     }
 }
