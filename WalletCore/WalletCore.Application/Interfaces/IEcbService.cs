@@ -1,4 +1,5 @@
-﻿using WalletCore.Domain.Models.GetDailyRates;
+﻿using Microsoft.Extensions.Configuration;
+using WalletCore.Domain.Models.GetDailyRates;
 
 namespace WalletCore.Application.Interfaces
 {
