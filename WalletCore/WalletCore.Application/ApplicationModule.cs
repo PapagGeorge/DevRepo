@@ -7,6 +7,7 @@ using WalletCore.Application.Configuration;
 using WalletCore.Application.HttpClientInfrastructure;
 using WalletCore.Application.Interfaces;
 using WalletCore.Application.Services;
+using WalletCore.Application.Strategies;
 
 namespace WalletCore.Application
 {
@@ -20,6 +21,8 @@ namespace WalletCore.Application
             var builder = new GenericHttpClientBuilder(services);
             configure(builder);
 
+            services.AddSingleton<IWalletBalanceStrategyFactory, WalletBalanceStrategyFactory>();
+            services.AddScoped<IEcbRateConverter, EcbRateConverter>();
             services.AddHostedService<ExchangeRateBackgroundJob>();
             services.AddSingleton<IGenericHttpClientFactory, GenericHttpClientFactory>();
             services.AddScoped<ICacheService, CacheService>();

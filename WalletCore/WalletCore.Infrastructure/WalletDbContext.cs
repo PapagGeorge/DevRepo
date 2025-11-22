@@ -13,6 +13,19 @@ namespace WalletCore.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Wallet>(entity =>
+            {
+                entity.Property(w => w.Balance)
+                      .HasPrecision(18, 8); // 18 digits, 8 after decimal
+
+                // Currency length and required
+                entity.Property(w => w.Currency)
+                      .IsRequired()
+                      .HasMaxLength(3); // ISO currency code like "USD"
+
+                entity.HasIndex(w => w.Currency);
+            });
+
             modelBuilder.Entity<ExchangeRate>(entity =>
             {
                 // Configure Rate precision
