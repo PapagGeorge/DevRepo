@@ -9,9 +9,9 @@ namespace WalletCore.Infrastructure.Repositories
 {
     public class ExchangeRateMergeRepository : IExchangeRateRepository
     {
-        private readonly ExchangeRateDbContext _dbContext;
+        private readonly WalletDbContext _dbContext;
 
-        public ExchangeRateMergeRepository(ExchangeRateDbContext dbContext)
+        public ExchangeRateMergeRepository(WalletDbContext dbContext)
         {
             _dbContext = dbContext;
         }

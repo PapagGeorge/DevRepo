@@ -21,12 +21,12 @@ namespace WalletCore.Infrastructure
 
         private static void AddDbContexts(this IServiceCollection services)
         {
-            services.AddDbContext<ExchangeRateDbContext>((serviceProvider, options) =>
+            services.AddDbContext<WalletDbContext>((serviceProvider, options) =>
             {
                 var dbOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
                 options.UseSqlServer(dbOptions.ExchangeRateDb, sql =>
                 {
-                    sql.MigrationsAssembly(typeof(ExchangeRateDbContext).Assembly.FullName);
+                    sql.MigrationsAssembly(typeof(WalletDbContext).Assembly.FullName);
                 });
             });
         }

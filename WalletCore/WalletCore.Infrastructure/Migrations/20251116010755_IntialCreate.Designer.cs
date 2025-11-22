@@ -11,7 +11,7 @@ using WalletCore.Infrastructure;
 
 namespace WalletCore.Infrastructure.Migrations
 {
-    [DbContext(typeof(ExchangeRateDbContext))]
+    [DbContext(typeof(WalletDbContext))]
     [Migration("20251116010755_IntialCreate")]
     partial class IntialCreate
     {

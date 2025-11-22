@@ -3,11 +3,12 @@ using WalletCore.Domain.DBModels;
 
 namespace WalletCore.Infrastructure
 {
-    public class ExchangeRateDbContext : DbContext
+    public class WalletDbContext : DbContext
     {
         public DbSet<ExchangeRate> ExchangeRates { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
 
-        public ExchangeRateDbContext(DbContextOptions<ExchangeRateDbContext> options)
+        public WalletDbContext(DbContextOptions<WalletDbContext> options)
             : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

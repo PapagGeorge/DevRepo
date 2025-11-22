@@ -10,7 +10,7 @@ using WalletCore.Infrastructure;
 
 namespace WalletCore.Infrastructure.Migrations
 {
-    [DbContext(typeof(ExchangeRateDbContext))]
+    [DbContext(typeof(WalletDbContext))]
     partial class ExchangeRateDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

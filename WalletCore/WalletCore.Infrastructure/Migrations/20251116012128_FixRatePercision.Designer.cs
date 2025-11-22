@@ -11,7 +11,7 @@ using WalletCore.Infrastructure;
 
 namespace WalletCore.Infrastructure.Migrations
 {
-    [DbContext(typeof(ExchangeRateDbContext))]
+    [DbContext(typeof(WalletDbContext))]
     [Migration("20251116012128_FixRatePercision")]
     partial class FixRatePercision
     {
