@@ -1,5 +1,6 @@
 ﻿using WalletCore.Application.Interfaces;
 using WalletCore.Domain.DBModels;
+using WalletCore.Domain.Exceptions;
 using WalletCore.Domain.Models.AdjustBalance;
 using WalletCore.Domain.Models.CreateWallet;
 using WalletCore.Domain.Models.EcbRateConverter;
@@ -24,9 +25,6 @@ namespace WalletCore.Application.Services
             _rateConverter = rateConverter;
         }
 
-        // -------------------------------------------------------
-        // CREATE WALLET
-        // -------------------------------------------------------
         public async Task<CreateWalletResponse> CreateWalletAsync(CreateWalletRequest request)
         {
             var wallet = new Wallet
@@ -45,12 +43,10 @@ namespace WalletCore.Application.Services
             };
         }
 
-        // -------------------------------------------------------
-        // GET BALANCE
-        // -------------------------------------------------------
         public async Task<GetBalanceResponse> GetBalanceAsync(GetBalanceRequest request)
         {
-            var wallet = await _walletRepository.GetByIdAsync(request.WalletId);
+            var wallet = await _walletRepository.GetByIdAsync(request.WalletId)
+                ?? throw new WalletException.WalletNotFoundException(request.WalletId);
 
             string targetCurrency = string.IsNullOrWhiteSpace(request.ConvertToCurrency)
                 ? wallet.Currency
@@ -81,12 +77,10 @@ namespace WalletCore.Application.Services
             };
         }
 
-        // -------------------------------------------------------
-        // ADJUST BALANCE (Deposit / Withdraw)
-        // -------------------------------------------------------
         public async Task<AdjustBalanceResponse> AdjustBalanceAsync(AdjustBalanceRequest request)
         {
-            var wallet = await _walletRepository.GetByIdAsync(request.WalletId);
+            var wallet = await _walletRepository.GetByIdAsync(request.WalletId)
+                ?? throw new WalletException.WalletNotFoundException(request.WalletId);
 
             var strategy = _strategyFactory.Create(request.StrategyName);
 

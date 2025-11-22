@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WalletCore.Application.Interfaces;
 using WalletCore.Domain.DBModels;
+using WalletCore.Domain.Exceptions;
 
 namespace WalletCore.Infrastructure.Repositories
 {
@@ -13,8 +14,15 @@ namespace WalletCore.Infrastructure.Repositories
             _db = db;
         }
 
-        public Task<Wallet?> GetByIdAsync(Guid id) =>
-            _db.Wallets.FirstOrDefaultAsync(w => w.Id == id);
+        public async Task<Wallet> GetByIdAsync(Guid id)
+        {
+            var wallet = await _db.Wallets.FirstOrDefaultAsync(w => w.Id == id);
+
+            if (wallet == null)
+                throw new WalletException.WalletNotFoundException(id);
+
+            return wallet;
+        }
 
         public async Task AddAsync(Wallet wallet)
         {
@@ -22,12 +30,15 @@ namespace WalletCore.Infrastructure.Repositories
             await _db.SaveChangesAsync();
         }
 
-        public async Task UpdateBalanceAsync(Guid walletId, decimal newBalance)
+        public async Task UpdateBalanceAsync(Guid id, decimal newBalance)
         {
-            var wallet = await _db.Wallets.FirstOrDefaultAsync(w => w.Id == walletId)
-                         ?? throw new KeyNotFoundException("Wallet not found");
+            var wallet = await _db.Wallets.FirstOrDefaultAsync(w => w.Id == id);
+            if (wallet == null)
+                throw new WalletException.WalletNotFoundException(id);
 
             wallet.Balance = newBalance;
+
+            _db.Wallets.Update(wallet);
             await _db.SaveChangesAsync();
         }
     }

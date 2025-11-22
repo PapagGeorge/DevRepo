@@ -1,4 +1,5 @@
 ﻿using WalletCore.Application.Interfaces;
+using WalletCore.Domain.Exceptions;
 using WalletCore.Domain.Models.WalletStrategy;
 
 namespace WalletCore.Application.Strategies
@@ -8,9 +9,9 @@ namespace WalletCore.Application.Strategies
         public WalletBalanceStrategyResult Apply(WalletBalanceStrategyOperation operation)
         {
             if (operation.CurrentBalance < operation.Amount)
-                throw new InvalidOperationException("Insufficient funds.");
+                throw new WalletException.InsufficientFundsException(operation.CurrentBalance, operation.Amount);
 
-            return new WalletBalanceStrategyResult()
+            return new WalletBalanceStrategyResult
             {
                 NewBalance = operation.CurrentBalance - operation.Amount,
                 IsSuccessful = true

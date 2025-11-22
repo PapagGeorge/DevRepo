@@ -36,6 +36,9 @@ namespace WalletCore.Application
                 return new CachedEcbService(inner, cache, logger);
             });
 
+            // Register Wallet Service
+            services.AddScoped<IWalletService, WalletService>();
+
             services.AddStackExchangeRedisCache(options =>
             {
                 var redisOptions = configuration.GetSection("Redis").Get<RedisOptions>();

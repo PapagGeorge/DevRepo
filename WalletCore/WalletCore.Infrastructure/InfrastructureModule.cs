@@ -16,6 +16,7 @@ namespace WalletCore.Infrastructure
         {
             services.AddDbContexts();
             services.AddScoped<IExchangeRateRepository, ExchangeRateMergeRepository>();
+            services.AddScoped<IWalletRepository, WalletRepository>();
             return services;
         }
 

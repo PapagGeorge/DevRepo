@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using WalletCore.Application;
 using WalletCore.Application.Configuration;
 using WalletCore.Application.HttpClientInfrastructure;
+using WalletCore.Domain.Exceptions;
 using WalletCore.Infrastructure;
 using WalletCore.Infrastructure.Configuration;
 
@@ -12,6 +13,12 @@ namespace WalletCore
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddSingleton<ExceptionHandler>(sp =>
+            {
+                var logger = sp.GetRequiredService<ILogger<ExceptionHandler>>();
+                return new ExceptionHandler(logger, typeof(WalletException));
+            });
 
             // Add services to the container.
             builder.Services.Configure<ECBClientConfig>(builder.Configuration.GetSection("ECBConfig"));
