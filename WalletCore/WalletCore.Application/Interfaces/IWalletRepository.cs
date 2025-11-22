@@ -6,6 +6,6 @@ namespace WalletCore.Application.Interfaces
     {
         Task<Wallet?> GetByIdAsync(Guid id);
         Task AddAsync(Wallet wallet);
-        Task UpdateBalanceAsync(Guid walletId, decimal newBalance);
+        Task UpdateBalanceAsync(Wallet wallet, decimal newBalance);
     }
 }

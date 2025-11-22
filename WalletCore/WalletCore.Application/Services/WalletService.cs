@@ -98,13 +98,14 @@ namespace WalletCore.Application.Services
                 Currency = wallet.Currency
             };
             var walletAdjustmentResult = strategy.Apply(walletAdjustmentOperation);
+            var oldBalance = wallet.Balance;
 
-            await _walletRepository.UpdateBalanceAsync(wallet.Id, walletAdjustmentResult.NewBalance);
+            await _walletRepository.UpdateBalanceAsync(wallet, walletAdjustmentResult.NewBalance);
 
             return new AdjustBalanceResponse
             {
                 WalletId = wallet.Id,
-                OldBalance = wallet.Balance,
+                OldBalance = oldBalance,
                 NewBalance = walletAdjustmentResult.NewBalance,
                 AppliedAmount = conversion.ConvertedAmount,
                 WalletCurrency = wallet.Currency

@@ -30,12 +30,8 @@ namespace WalletCore.Infrastructure.Repositories
             await _db.SaveChangesAsync();
         }
 
-        public async Task UpdateBalanceAsync(Guid id, decimal newBalance)
+        public async Task UpdateBalanceAsync(Wallet wallet, decimal newBalance)
         {
-            var wallet = await _db.Wallets.FirstOrDefaultAsync(w => w.Id == id);
-            if (wallet == null)
-                throw new WalletException.WalletNotFoundException(id);
-
             wallet.Balance = newBalance;
 
             _db.Wallets.Update(wallet);
