@@ -1,4 +1,6 @@
-﻿namespace WalletCore.Domain.Exceptions
+﻿using WalletCore.Domain.Models.AdjustBalance;
+
+namespace WalletCore.Domain.Exceptions
 {
     public static class WalletException
     {
@@ -28,7 +30,7 @@
 
         public class StrategyNotFoundException : BusinessException
         {
-            public StrategyNotFoundException(string strategyName)
+            public StrategyNotFoundException(WalletStrategyOperation strategyName)
                 : base($"Balance strategy '{strategyName}' does not exist.") { }
         }
     }

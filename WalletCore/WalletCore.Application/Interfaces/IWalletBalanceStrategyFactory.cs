@@ -1,7 +1,9 @@
-﻿namespace WalletCore.Application.Interfaces
+﻿using WalletCore.Domain.Models.AdjustBalance;
+
+namespace WalletCore.Application.Interfaces
 {
     public interface IWalletBalanceStrategyFactory
     {
-        IWalletBalanceStrategy Create(string strategyName);
+        IWalletBalanceStrategy Create(WalletStrategyOperation adjustmentStrategy);
     }
 }

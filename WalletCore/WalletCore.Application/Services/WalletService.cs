@@ -82,7 +82,7 @@ namespace WalletCore.Application.Services
             var wallet = await _walletRepository.GetByIdAsync(request.WalletId)
                 ?? throw new WalletException.WalletNotFoundException(request.WalletId);
 
-            var strategy = _strategyFactory.Create(request.StrategyName);
+            var strategy = _strategyFactory.Create(request.AdjustmentStrategy);
 
             var conversion = await _rateConverter.ConvertAsync(new CurrencyConversionRequest
             {
@@ -108,7 +108,10 @@ namespace WalletCore.Application.Services
                 OldBalance = oldBalance,
                 NewBalance = walletAdjustmentResult.NewBalance,
                 AppliedAmount = conversion.ConvertedAmount,
-                WalletCurrency = wallet.Currency
+                WalletCurrency = wallet.Currency,
+                IsSuccessful = true,
+                AdjustmentStrategy = request.AdjustmentStrategy,
+                Message = request.AdjustmentStrategy.ToMessage()
             };
         }
     }

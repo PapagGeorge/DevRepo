@@ -9,5 +9,6 @@
         public string Message { get; set; }
         public decimal AppliedAmount { get; set; }
         public string WalletCurrency { get; set; }
+        public WalletStrategyOperation AdjustmentStrategy { get; set; }
     }
 }

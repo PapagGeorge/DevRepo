@@ -1,19 +1,20 @@
 ﻿using WalletCore.Application.Interfaces;
 using WalletCore.Domain.Exceptions;
 using WalletCore.Domain.Models;
+using WalletCore.Domain.Models.AdjustBalance;
 
 namespace WalletCore.Application.Strategies
 {
     public class WalletBalanceStrategyFactory : IWalletBalanceStrategyFactory
     {
-        public IWalletBalanceStrategy Create(string strategyName)
+        public IWalletBalanceStrategy Create(WalletStrategyOperation adjustmentStrategy)
         {
-            return strategyName.ToLower() switch
+            return adjustmentStrategy switch
             {
-                "addfunds" => new AddFundsStrategy(),
-                "subtractfunds" => new SubtractFundsStrategy(),
-                "forcesubtractfunds" => new ForceSubtractFundsStrategy(),
-                _ => throw new WalletException.StrategyNotFoundException(strategyName)
+                WalletStrategyOperation.AddFunds => new AddFundsStrategy(),
+                WalletStrategyOperation.SubtractFunds => new SubtractFundsStrategy(),
+                WalletStrategyOperation.ForceSubtractFunds => new ForceSubtractFundsStrategy(),
+                _ => throw new WalletException.StrategyNotFoundException(adjustmentStrategy)
             };
         }
     }
