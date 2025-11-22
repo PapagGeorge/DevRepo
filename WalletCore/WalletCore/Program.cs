@@ -17,7 +17,7 @@ namespace WalletCore
             builder.Services.AddSingleton<ExceptionHandler>(sp =>
             {
                 var logger = sp.GetRequiredService<ILogger<ExceptionHandler>>();
-                return new ExceptionHandler(logger, typeof(WalletException));
+                return new ExceptionHandler(logger, typeof(WalletCore.Domain.Exceptions.WalletException.BusinessException));
             });
 
             // Add services to the container.
