@@ -14,6 +14,17 @@ namespace WalletCore
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
+            });
+
             builder.Services.AddSingleton<ExceptionHandler>(sp =>
             {
                 var logger = sp.GetRequiredService<ILogger<ExceptionHandler>>();
@@ -38,10 +49,11 @@ namespace WalletCore
 
             // Configure the HTTP request pipeline.
 
+            app.UseCors("AllowAll");
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
