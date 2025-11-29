@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using Serilog;
 using WalletCore.Application;
 using WalletCore.Application.Configuration;
 using WalletCore.Application.HttpClientInfrastructure;
@@ -29,6 +30,11 @@ namespace WalletCore
             {
                 var logger = sp.GetRequiredService<ILogger<ExceptionHandler>>();
                 return new ExceptionHandler(logger, typeof(WalletCore.Domain.Exceptions.WalletException.BusinessException));
+            });
+
+            builder.Host.UseSerilog((ctx, lc) =>
+            {
+                lc.ReadFrom.Configuration(ctx.Configuration);
             });
 
             // Add services to the container.
