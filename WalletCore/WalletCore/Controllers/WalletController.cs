@@ -27,13 +27,13 @@ namespace WalletCore.Controllers
             _logger = logger;
         }
 
-        private async Task<Response<T>> HandleRequestAsync<T>(object request, Func<Task<T>> action)
+        private async Task<Response<T>> HandleRequestAsync<T>(object request, Func<Task<T>> func)
         {
             var path = HttpContext.Request.Path.Value;
 
             _logger.LogInformation($"{path} Request: {JsonSerializer.Serialize(request)}");
 
-            var response = await _exceptionHandler.HandleAsync(action);
+            var response = await _exceptionHandler.HandleAsync(func);
 
             _logger.LogInformation($"{path} Response: {JsonSerializer.Serialize(response)}");
 

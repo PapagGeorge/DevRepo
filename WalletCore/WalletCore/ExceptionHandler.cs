@@ -13,11 +13,11 @@ namespace WalletCore
             _businessExceptions = businessExceptions;
         }
 
-        public async Task<Response<T>> HandleAsync<T>(Func<Task<T>> action)
+        public async Task<Response<T>> HandleAsync<T>(Func<Task<T>> func)
         {
             try
             {
-                var result = await action();
+                var result = await func();
                 return new Response<T> { Payload = result };
             }
             catch (Exception ex) when (_businessExceptions.Any(t => t.IsInstanceOfType(ex)))
