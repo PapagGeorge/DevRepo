@@ -4,6 +4,8 @@
     {
         public string ClientName { get; set; }
         public string BaseAddress { get; set; }
-        public string Endpoint { get; set; }
+        public int? TimeoutSeconds { get; set; }
+        public string UserAgent { get; set; }
+        public int? HandlerLifetimeMinutes { get; set; }
     }
 }

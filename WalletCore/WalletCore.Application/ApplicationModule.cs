@@ -15,17 +15,17 @@ namespace WalletCore.Application
     {
         public static IServiceCollection AddApplicationServices(
         this IServiceCollection services,
-        IConfiguration configuration,
-        Action<GenericHttpClientBuilder> configure)
+        IConfiguration configuration)
         {
-            var builder = new GenericHttpClientBuilder(services);
-            configure(builder);
+            services.AddSingleton<HttpClientsRegistry>();
 
             services.AddSingleton<IWalletBalanceStrategyFactory, WalletBalanceStrategyFactory>();
             services.AddScoped<IEcbRateConverter, EcbRateConverter>();
             services.AddHostedService<ExchangeRateBackgroundJob>();
             services.AddSingleton<IGenericHttpClientFactory, GenericHttpClientFactory>();
             services.AddScoped<ICacheService, CacheService>();
+
+            services.AddECBHttpClient(configuration);
 
             // Register the raw HTTP service
             services.AddScoped<EcbService>();

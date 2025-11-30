@@ -3,16 +3,21 @@ using WalletCore.Application.Configuration;
 
 namespace WalletCore.Application.HttpClientInfrastructure
 {
-    public static class HttpClientsRegistry
+    public class HttpClientsRegistry
     {
-        public static HttpClientRegistration ECBClientRegistry(IOptions<ECBClientConfig> options)
-        {
-            var config = options.Value;
+        private readonly ECBClientConfig _ecbConfig;
 
+        public HttpClientsRegistry(IOptions<ECBClientConfig> ecbClientOptions)
+        {
+            _ecbConfig = ecbClientOptions.Value;
+        }
+
+        public HttpClientRegistration GetECBRegistration()
+        {
             return new HttpClientRegistration
             {
-                ClientName = config.ClientName,
-                BaseAddress = config.BaseAddress
+                ClientName = _ecbConfig.ClientName,
+                BaseAddress = _ecbConfig.BaseAddress
             };
         }
     }
