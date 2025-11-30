@@ -32,6 +32,7 @@ namespace WalletCore
                         .ReadFrom.Services(services)
                         .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
                         .Enrich.WithProperty("Application", "WalletCore");
+                    Serilog.Debugging.SelfLog.Enable(Console.Error);
                 });
 
                 builder.Services.AddCors(options =>
@@ -56,11 +57,13 @@ namespace WalletCore
                 builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("ConnectionStrings"));
                 builder.Services.Configure<RedisOptions>(builder.Configuration.GetSection("Redis"));
 
+                // Add services
                 builder.Services.AddControllers();
                 builder.Services.AddInfrastructure(builder.Configuration);
                 builder.Services.AddApplicationServices(builder.Configuration);
 
                 var app = builder.Build();
+                app.UseMiddleware<TransactionIdMiddleware>();
 
                 // Add Serilog request logging middleware
                 app.UseSerilogRequestLogging(options =>
@@ -75,7 +78,6 @@ namespace WalletCore
                     };
                 });
 
-                // Configure the HTTP request pipeline
                 app.UseCors("AllowAll");
                 app.UseHttpsRedirection();
                 app.UseAuthorization();
