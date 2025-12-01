@@ -17,15 +17,13 @@ namespace WalletCore.Application
         this IServiceCollection services,
         IConfiguration configuration)
         {
-            services.AddSingleton<HttpClientsRegistry>();
-
             services.AddSingleton<IWalletBalanceStrategyFactory, WalletBalanceStrategyFactory>();
             services.AddScoped<IEcbRateConverter, EcbRateConverter>();
             services.AddHostedService<ExchangeRateBackgroundJob>();
             services.AddSingleton<IGenericHttpClientFactory, GenericHttpClientFactory>();
             services.AddScoped<ICacheService, CacheService>();
 
-            services.AddECBHttpClient(configuration);
+            services.AddECBHttpClient();
 
             // Register the raw HTTP service
             services.AddScoped<EcbService>();
@@ -48,6 +46,7 @@ namespace WalletCore.Application
                 options.Configuration = redisOptions.ConnectionString;
                 options.InstanceName = redisOptions.InstanceName;
             });
+
 
             return services;
         }

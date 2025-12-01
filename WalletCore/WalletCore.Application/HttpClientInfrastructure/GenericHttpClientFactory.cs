@@ -8,9 +8,7 @@ namespace WalletCore.Application.HttpClientInfrastructure
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILoggerFactory _loggerFactory;
 
-        public GenericHttpClientFactory(
-            IHttpClientFactory httpClientFactory,
-            ILoggerFactory loggerFactory)
+        public GenericHttpClientFactory(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
         {
             _httpClientFactory = httpClientFactory;
             _loggerFactory = loggerFactory;
@@ -18,9 +16,9 @@ namespace WalletCore.Application.HttpClientInfrastructure
 
         public GenericHttpClient CreateClient(string name)
         {
-            var httpClient = _httpClientFactory.CreateClient(name);
+            var client = _httpClientFactory.CreateClient(name);
             var logger = _loggerFactory.CreateLogger<GenericHttpClient>();
-            return new GenericHttpClient(httpClient, logger);
+            return new GenericHttpClient(client, logger);
         }
     }
 }
