@@ -2,7 +2,7 @@
 
 namespace WalletCore.Application.Interfaces
 {
-    public interface IExchangeRateRepository
+    public interface IExchangeRateMergeRepository
     {
         Task MergeRatesAsync(IEnumerable<ExchangeRate> rates, CancellationToken cancellationToken = default);
     }

@@ -2,7 +2,7 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using WalletCore.Application;
 using WalletCore.Application.Configuration;
-using WalletCore.Application.HttpClientInfrastructure;
+using WalletCore.Infrastructure.HttpClientInfrastructure;
 using WalletCore.Domain.Exceptions;
 using WalletCore.Infrastructure;
 using WalletCore.Infrastructure.Configuration;
@@ -59,7 +59,7 @@ namespace WalletCore
 
                 // Add services
                 builder.Services.AddControllers();
-                builder.Services.AddInfrastructure(builder.Configuration);
+                builder.Services.AddInfrastructure();
                 builder.Services.AddApplicationServices(builder.Configuration);
 
                 var app = builder.Build();

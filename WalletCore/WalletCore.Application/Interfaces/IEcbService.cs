@@ -5,6 +5,6 @@ namespace WalletCore.Application.Interfaces
 {
     public interface IEcbService
     {
-        Task<GesmesEnvelope> GetDailyRatesAsync();
+        Task<GesmesEnvelope> GetDailyRatesAsync(CancellationToken ct = default);
     }
 }

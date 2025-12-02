@@ -1,21 +1,22 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using WalletCore.Application.Interfaces;
 using WalletCore.Infrastructure.Configuration;
+using WalletCore.Infrastructure.HttpClientInfrastructure;
 using WalletCore.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace WalletCore.Infrastructure
 {
     public static class InfrastructureModule
     {
         public static IServiceCollection AddInfrastructure(
-        this IServiceCollection services,
-        IConfiguration config)
+        this IServiceCollection services)
         {
+            services.AddECBHttpClient();
             services.AddDbContexts();
-            services.AddScoped<IExchangeRateRepository, ExchangeRateMergeRepository>();
+            services.AddScoped<IExchangeRateMergeRepository, ExchangeRateMergeRepository>();
             services.AddScoped<IWalletRepository, WalletRepository>();
             return services;
         }

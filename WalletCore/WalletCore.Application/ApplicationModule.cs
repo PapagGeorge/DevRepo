@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WalletCore.Application.BackgroundJobs;
 using WalletCore.Application.Configuration;
-using WalletCore.Application.HttpClientInfrastructure;
 using WalletCore.Application.Interfaces;
 using WalletCore.Application.Services;
 using WalletCore.Application.Strategies;
@@ -17,29 +16,28 @@ namespace WalletCore.Application
         this IServiceCollection services,
         IConfiguration configuration)
         {
+            // Register Strategies and Factories
             services.AddSingleton<IWalletBalanceStrategyFactory, WalletBalanceStrategyFactory>();
+
+            // Register Core Services
             services.AddScoped<IEcbRateConverter, EcbRateConverter>();
-            services.AddHostedService<ExchangeRateBackgroundJob>();
-            services.AddSingleton<IGenericHttpClientFactory, GenericHttpClientFactory>();
             services.AddScoped<ICacheService, CacheService>();
-
-            services.AddECBHttpClient();
-
-            // Register the raw HTTP service
-            services.AddScoped<EcbService>();
-
-            // Register IEcbService as the cached decorator
-            services.AddScoped<IEcbService>(sp =>
-            {
-                var inner = sp.GetRequiredService<EcbService>();
-                var cache = sp.GetRequiredService<IDistributedCache>();
-                var logger = sp.GetRequiredService<ILogger<CachedEcbService>>();
-                return new CachedEcbService(inner, cache, logger);
-            });
-
-            // Register Wallet Service
             services.AddScoped<IWalletService, WalletService>();
 
+            // Register ECB Service with Decorator Pattern
+            services.AddScoped<EcbService>(); // Raw service
+            services.AddScoped<IEcbService>(sp =>
+            {
+                var innerService = sp.GetRequiredService<EcbService>();
+                var cache = sp.GetRequiredService<IDistributedCache>();
+                var logger = sp.GetRequiredService<ILogger<CachedEcbService>>();
+                return new CachedEcbService(innerService, cache, logger);
+            });
+
+            // Register Background Jobs
+            services.AddHostedService<ExchangeRateBackgroundJob>();
+
+            // Register Redis Cache
             services.AddStackExchangeRedisCache(options =>
             {
                 var redisOptions = configuration.GetSection("Redis").Get<RedisOptions>();

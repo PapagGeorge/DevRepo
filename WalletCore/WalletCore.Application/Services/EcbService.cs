@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using WalletCore.Application.Configuration;
 using WalletCore.Application.Interfaces;
@@ -8,20 +9,24 @@ namespace WalletCore.Application.Services
 {
     public class EcbService : IEcbService
     {
-        private readonly IGenericHttpClientFactory _httpClientFactory;
-        private readonly ECBClientConfig _config;
+        private readonly IECBClient _ecbClient;
+        private readonly ILogger<EcbService> _logger;
 
-        public EcbService(IGenericHttpClientFactory httpClientFactory, IOptions<ECBClientConfig> options)
+        // Constructor injection of typed client - clean and type-safe!
+        public EcbService(IECBClient ecbClient, ILogger<EcbService> logger)
         {
-            _httpClientFactory = httpClientFactory;
-            _config = options.Value;
+            _ecbClient = ecbClient;
+            _logger = logger;
         }
 
-        public async Task<GesmesEnvelope> GetDailyRatesAsync()
+        public async Task<GesmesEnvelope> GetDailyRatesAsync(CancellationToken ct = default)
         {
-            return await _httpClientFactory
-                .CreateClient(_config.ClientName)
-                .GetXmlAsync<GesmesEnvelope>("/stats/eurofxref/eurofxref-daily.xml");
+            _logger.LogInformation("Fetching latest exchange rates from ECB");
+
+            var response = await _ecbClient.GetXmlAsync<GesmesEnvelope>("/stats/eurofxref/eurofxref-daily.xml", ct);
+
+            _logger.LogInformation("Successfully fetched exchange rates");
+            return response;
         }
     }
 }

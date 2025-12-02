@@ -7,7 +7,7 @@ using WalletCore.Domain.DBModels;
 
 namespace WalletCore.Infrastructure.Repositories
 {
-    public class ExchangeRateMergeRepository : IExchangeRateRepository
+    public class ExchangeRateMergeRepository : IExchangeRateMergeRepository
     {
         private readonly WalletDbContext _dbContext;
 

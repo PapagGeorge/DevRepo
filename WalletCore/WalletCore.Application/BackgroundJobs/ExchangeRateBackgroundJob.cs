@@ -29,7 +29,7 @@ namespace WalletCore.Application.BackgroundJobs
                 {
                     using var scope = _serviceProvider.CreateScope();
                     var ecbService = scope.ServiceProvider.GetRequiredService<IEcbService>();
-                    var mergeRepo = scope.ServiceProvider.GetRequiredService<IExchangeRateRepository>();
+                    var mergeRepo = scope.ServiceProvider.GetRequiredService<IExchangeRateMergeRepository>();
                     var cache = scope.ServiceProvider.GetRequiredService<ICacheService>();
 
                     await RunJobAsync(ecbService, mergeRepo, cache, stoppingToken);
@@ -45,7 +45,7 @@ namespace WalletCore.Application.BackgroundJobs
 
         private async Task RunJobAsync(
             IEcbService ecbService,
-            IExchangeRateRepository mergeRepo,
+            IExchangeRateMergeRepository mergeRepo,
             ICacheService cacheService,
             CancellationToken ct)
         {

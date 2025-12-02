@@ -25,7 +25,7 @@ namespace WalletCore.Application.Services
             _logger = logger;
         }
 
-        public async Task<GesmesEnvelope> GetDailyRatesAsync()
+        public async Task<GesmesEnvelope> GetDailyRatesAsync(CancellationToken ct = default)
         {
             try
             {
