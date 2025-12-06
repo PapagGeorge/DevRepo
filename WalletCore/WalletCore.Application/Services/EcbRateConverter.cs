@@ -1,4 +1,5 @@
 ﻿using WalletCore.Application.Interfaces;
+using WalletCore.Domain.DBModels;
 using WalletCore.Domain.Models.EcbRateConverter;
 using WalletCore.Domain.Models.GetDailyRates;
 
@@ -21,8 +22,8 @@ namespace WalletCore.Application.Services
                 return new CurrencyConversionResponse { ConvertedAmount = request.Amount };
             }
 
-            var envelope = await _ecbService.GetDailyRatesAsync();
-            var rateDict = BuildRateDictionary(envelope);
+            var exchangeRates = await _ecbService.GetDailyRatesAsync();
+            var rateDict = BuildRateDictionary(exchangeRates);
 
             decimal fromRate = rateDict[request.FromCurrency];
             decimal toRate = rateDict[request.ToCurrency];
@@ -36,18 +37,16 @@ namespace WalletCore.Application.Services
             };
         }
 
-        private static Dictionary<string, decimal> BuildRateDictionary(GesmesEnvelope envelope)
+        private static Dictionary<string, decimal> BuildRateDictionary(List<ExchangeRate> exchangeRates)
         {
             var dict = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase)
             {
                 ["EUR"] = 1.0m
             };
 
-            var latestCube = envelope.Cube.TimeCubes.First();
-
-            foreach (var rate in latestCube.Rates)
+            foreach (var rate in exchangeRates)
             {
-                dict[rate.Currency] = rate.Rate;
+                dict[rate.CurrencyCode] = rate.Rate;
             }
 
             return dict;

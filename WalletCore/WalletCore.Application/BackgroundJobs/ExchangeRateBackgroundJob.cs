@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WalletCore.Application.Interfaces;
+using WalletCore.Application.Services;
 using WalletCore.Domain.DBModels;
 using WalletCore.Domain.Models.GetDailyRates;
 
@@ -11,7 +12,6 @@ namespace WalletCore.Application.BackgroundJobs
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<ExchangeRateBackgroundJob> _logger;
-        private const string CacheKey = "latest_exchange_rates";
 
         public ExchangeRateBackgroundJob(IServiceProvider serviceProvider, ILogger<ExchangeRateBackgroundJob> logger)
         {
@@ -28,11 +28,13 @@ namespace WalletCore.Application.BackgroundJobs
                 try
                 {
                     using var scope = _serviceProvider.CreateScope();
+
+                    // Resolve raw service directly (no cache)
                     var ecbService = scope.ServiceProvider.GetRequiredKeyedService<IEcbService>("raw");
                     var mergeRepo = scope.ServiceProvider.GetRequiredService<IExchangeRateMergeRepository>();
-                    var cache = scope.ServiceProvider.GetRequiredService<ICacheService>();
+                    var cacheService = scope.ServiceProvider.GetRequiredService<ICacheService>();
 
-                    await RunJobAsync(ecbService, mergeRepo, cache, stoppingToken);
+                    await RunJobAsync(ecbService, mergeRepo, cacheService, stoppingToken);
                 }
                 catch (Exception ex)
                 {
@@ -51,12 +53,14 @@ namespace WalletCore.Application.BackgroundJobs
         {
             _logger.LogInformation("Fetching ECB daily rates...");
 
-            var xml = await ecbService.GetDailyRatesAsync();
-            var rates = xml.ParseRates();
+            // Fetch fresh exchange rates from ECB (no caching)
+            var exchangeRates = await ecbService.GetDailyRatesAsync(ct);
 
-            await mergeRepo.MergeRatesAsync(rates, ct);
+            // Merge into DB
+            await mergeRepo.MergeRatesAsync(exchangeRates, ct);
 
-            await cacheService.UpdateExchangeRatesAsync(rates, ct);
+            // Update cache for app usage
+            await cacheService.UpdateExchangeRatesAsync(exchangeRates, ct);
 
             _logger.LogInformation("Exchange rates updated and cached.");
         }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using WalletCore.Application.Interfaces;
+using WalletCore.Domain.DBModels;
 using WalletCore.Domain.Models.GetDailyRates;
 
 namespace WalletCore.Application.Services
@@ -20,7 +21,7 @@ namespace WalletCore.Application.Services
             _logger = logger;
         }
 
-        public async Task<GesmesEnvelope> GetDailyRatesAsync(CancellationToken ct = default)
+        public async Task<List<ExchangeRate>> GetDailyRatesAsync(CancellationToken ct = default)
         {
             try
             {
@@ -28,7 +29,7 @@ namespace WalletCore.Application.Services
                 if (!string.IsNullOrEmpty(json))
                 {
                     _logger.LogInformation("Cache hit: returning ECB rates from Redis.");
-                    return JsonSerializer.Deserialize<GesmesEnvelope>(json)!;
+                    return JsonSerializer.Deserialize<List<ExchangeRate>>(json);
                 }
             }
             catch (Exception ex)
@@ -36,11 +37,11 @@ namespace WalletCore.Application.Services
                 _logger.LogWarning(ex, "Failed to read from cache.");
             }
 
-            var xml = await _inner.GetDailyRatesAsync(); // Call API
+            var exchanggeRates = await _inner.GetDailyRatesAsync(); // Call API
+            var serialized = JsonSerializer.Serialize(exchanggeRates);
 
             try
             {
-                var serialized = JsonSerializer.Serialize(xml);
                 await _cache.SetStringAsync(CacheKey, serialized, new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2)
@@ -51,7 +52,7 @@ namespace WalletCore.Application.Services
                 _logger.LogWarning(ex, "Failed to write ECB rates to cache.");
             }
 
-            return xml;
+            return exchanggeRates;
         }
     }
 }
