@@ -24,15 +24,22 @@ namespace WalletCore.Application
             services.AddScoped<ICacheService, CacheService>();
             services.AddScoped<IWalletService, WalletService>();
 
-            // Register ECB Service with Decorator Pattern
-            services.AddScoped<EcbService>(); // Raw service
-            services.AddScoped<IEcbService>(sp =>
+            services.AddKeyedScoped("raw", (sp, _) => new EcbService(
+            sp.GetRequiredService<IECBClient>(),
+            sp.GetRequiredService<ILogger<EcbService>>()
+            ));
+
+            services.AddKeyedScoped("cached", (sp, _) =>
             {
-                var innerService = sp.GetRequiredService<EcbService>();
+                var raw = sp.GetRequiredKeyedService<IEcbService>("raw");
                 var cache = sp.GetRequiredService<IDistributedCache>();
                 var logger = sp.GetRequiredService<ILogger<CachedEcbService>>();
-                return new CachedEcbService(innerService, cache, logger);
+                return new CachedEcbService(raw, cache, logger);
             });
+
+            // Default IEcbService resolves to cached
+            services.AddScoped<IEcbService>(sp =>
+                sp.GetRequiredKeyedService<IEcbService>("cached"));
 
             // Register Background Jobs
             services.AddHostedService<ExchangeRateBackgroundJob>();

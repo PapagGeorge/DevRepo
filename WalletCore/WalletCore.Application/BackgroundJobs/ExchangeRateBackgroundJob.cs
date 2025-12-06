@@ -28,7 +28,7 @@ namespace WalletCore.Application.BackgroundJobs
                 try
                 {
                     using var scope = _serviceProvider.CreateScope();
-                    var ecbService = scope.ServiceProvider.GetRequiredService<IEcbService>();
+                    var ecbService = scope.ServiceProvider.GetRequiredKeyedService<IEcbService>("raw");
                     var mergeRepo = scope.ServiceProvider.GetRequiredService<IExchangeRateMergeRepository>();
                     var cache = scope.ServiceProvider.GetRequiredService<ICacheService>();
 
@@ -52,28 +52,13 @@ namespace WalletCore.Application.BackgroundJobs
             _logger.LogInformation("Fetching ECB daily rates...");
 
             var xml = await ecbService.GetDailyRatesAsync();
-            var rates = ParseRates(xml);
+            var rates = xml.ParseRates();
 
             await mergeRepo.MergeRatesAsync(rates, ct);
 
             await cacheService.UpdateExchangeRatesAsync(rates, ct);
 
             _logger.LogInformation("Exchange rates updated and cached.");
-        }
-
-        private static List<ExchangeRate> ParseRates(GesmesEnvelope xml)
-        {
-            var timeCube = xml.Cube.TimeCubes.First(); // Daily rates → 1 element
-            var date = DateOnly.Parse(timeCube.Time);
-
-            return timeCube.Rates.Select(r =>
-                new ExchangeRate
-                {
-                    Date = date,
-                    CurrencyCode = r.Currency,
-                    Rate = r.Rate,
-                    UpdatedAt = DateTime.UtcNow
-                }).ToList();
         }
     }
 }
