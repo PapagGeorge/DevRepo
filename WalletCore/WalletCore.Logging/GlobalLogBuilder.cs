@@ -68,9 +68,9 @@
             return this;
         }
 
-        public GlobalLogBuilder WithException(Exception exception)
+        public GlobalLogBuilder WithException(Exception? exception)
         {
-            _exception = exception.StackTrace;
+            _exception = exception?.StackTrace;
             return this;
         }
 

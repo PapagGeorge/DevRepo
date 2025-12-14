@@ -1,41 +1,83 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Text;
 using WalletCore.Application.Interfaces;
 using WalletCore.Domain.DBModels;
+using WalletCore.Logging;
 
 namespace WalletCore.Infrastructure.Repositories
 {
     public class ExchangeRateMergeRepository : IExchangeRateMergeRepository
     {
         private readonly WalletDbContext _dbContext;
+        private readonly ILogger<ExchangeRateMergeRepository> _logger;
 
-        public ExchangeRateMergeRepository(WalletDbContext dbContext)
+        public ExchangeRateMergeRepository(
+            WalletDbContext dbContext,
+            ILogger<ExchangeRateMergeRepository> logger)
         {
             _dbContext = dbContext;
+            _logger = logger;
         }
 
-        public async Task MergeRatesAsync(IEnumerable<ExchangeRate> rates, CancellationToken cancellationToken = default)
+        public async Task MergeRatesAsync(
+        IEnumerable<ExchangeRate> rates,
+        CancellationToken cancellationToken = default)
         {
-            // Convert to DataTable for TVP
-            var table = new DataTable();
-            table.Columns.Add("Id", typeof(Guid));
-            table.Columns.Add("Date", typeof(DateTime));
-            table.Columns.Add("CurrencyCode", typeof(string));
-            table.Columns.Add("Rate", typeof(decimal));
-            table.Columns.Add("UpdatedAt", typeof(DateTime));
-
-            foreach (var rate in rates)
-                table.Rows.Add(rate.Id, rate.Date.ToDateTime(TimeOnly.MinValue), rate.CurrencyCode, rate.Rate, rate.UpdatedAt);
-
-            var param = new SqlParameter("@Rates", table)
+            try
             {
-                SqlDbType = SqlDbType.Structured,
-                TypeName = "ExchangeRateType"
-            };
+                _logger.LogInfoExt(
+                    "Merging exchange rates",
+                    enrich: b => b.WithPayload(new
+                    {
+                        Count = rates.Count()
+                    }));
 
-            await _dbContext.Database.ExecuteSqlRawAsync("EXEC MergeExchangeRates @Rates", new[] { param }, cancellationToken: cancellationToken);
+                var table = new DataTable();
+                table.Columns.Add("Id", typeof(Guid));
+                table.Columns.Add("Date", typeof(DateTime));
+                table.Columns.Add("CurrencyCode", typeof(string));
+                table.Columns.Add("Rate", typeof(decimal));
+                table.Columns.Add("UpdatedAt", typeof(DateTime));
+
+                foreach (var rate in rates)
+                {
+                    table.Rows.Add(
+                        rate.Id,
+                        rate.Date.ToDateTime(TimeOnly.MinValue),
+                        rate.CurrencyCode,
+                        rate.Rate,
+                        rate.UpdatedAt);
+                }
+
+                var param = new SqlParameter("@Rates", table)
+                {
+                    SqlDbType = SqlDbType.Structured,
+                    TypeName = "ExchangeRateType"
+                };
+
+                await _dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC MergeExchangeRates @Rates",
+                    new[] { param },
+                    cancellationToken: cancellationToken);
+
+                _logger.LogInfoExt(
+                    "Exchange rates merged successfully",
+                    enrich: b => b.WithPayload(new
+                    {
+                        Rows = table.Rows.Count
+                    }));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogErrorExt(
+                    "Failed to merge exchange rates",
+                    ex);
+
+                throw;
+            }
         }
     }
 }

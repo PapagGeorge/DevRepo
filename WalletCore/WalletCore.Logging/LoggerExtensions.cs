@@ -8,7 +8,7 @@ namespace WalletCore.Logging
         public static void LogErrorExt(
             this ILogger logger,
             string message,
-            Exception exception,
+            Exception? exception = null,
             Action<GlobalLogBuilder>? enrich = null)
         {
             var builder = CreateBaseBuilder()
@@ -41,11 +41,13 @@ namespace WalletCore.Logging
         public static void LogWarningExt(
             this ILogger logger,
             string message,
+            Exception? exception = null,
             Action<GlobalLogBuilder>? enrich = null)
         {
             var builder = CreateBaseBuilder()
                 .WithLevel(LogLevelExt.Warning.ToString())
-                .WithMessage(message);
+                .WithMessage(message)
+                .WithException(exception);
 
             enrich?.Invoke(builder);
 
@@ -54,7 +56,7 @@ namespace WalletCore.Logging
             logger.LogWarning("{@GlobalLog}", log);
         }
 
-        public static void LogRequest(
+        public static void LogRequestExt(
             this ILogger logger,
             string message,
             object? payload,
@@ -73,7 +75,7 @@ namespace WalletCore.Logging
             logger.LogInformation("{@GlobalLog}", log);
         }
 
-        public static void LogResponse(
+        public static void LogResponseExt(
             this ILogger logger,
             string message,
             object? payload,
@@ -90,37 +92,6 @@ namespace WalletCore.Logging
             var log = builder.Build();
 
             logger.LogInformation("{@GlobalLog}", log);
-        }
-
-        public static async Task<TResponse> LogExternalHttpCall<TResponse>(
-            this ILogger logger,
-            object? requestPayload,
-            object? responsePayload,
-            string requestMessage,
-            string responseMessage,
-            string requestUUID,
-            Func<Task<TResponse>> httpCall,
-            object? request = null)
-        {
-            var requestLogBuilder = CreateBaseBuilder()
-                .WithLevel(LogLevelExt.Information.ToString())
-                .WithDirection(LogDirection.Inbound.ToString())
-                .WithMessage(requestMessage)
-                .WithPayload(requestPayload);
-            var requestLog = requestLogBuilder.Build();
-            logger.LogInformation("{@GlobalLog}", requestLog);
-
-            var result = await httpCall();
-
-            var responseLogBuilder = CreateBaseBuilder()
-                .WithLevel(LogLevelExt.Information.ToString())
-                .WithDirection(LogDirection.Outbound.ToString())
-                .WithMessage(responseMessage)
-                .WithPayload(result);
-            var responseLog = responseLogBuilder.Build();
-            logger.LogInformation("{@GlobalLog}", responseLog);
-
-            return result;
         }
 
         public static GlobalLogBuilder CreateBaseBuilder()

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WalletCore.Domain\WalletCore.Domain.csproj" />
+    <ProjectReference Include="..\WalletCore.Logging\WalletCore.Logging.csproj" />
   </ItemGroup>
 
 </Project>

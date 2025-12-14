@@ -5,6 +5,7 @@ using WalletCore.Application.Interfaces;
 using WalletCore.Application.Services;
 using WalletCore.Domain.DBModels;
 using WalletCore.Domain.Models.GetDailyRates;
+using WalletCore.Logging;
 
 namespace WalletCore.Application.BackgroundJobs
 {
@@ -21,7 +22,7 @@ namespace WalletCore.Application.BackgroundJobs
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Exchange rate background job started.");
+            _logger.LogInfoExt("Exchange rate background job started.");
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -38,7 +39,7 @@ namespace WalletCore.Application.BackgroundJobs
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred while running exchange rate job.");
+                    _logger.LogErrorExt("Error occurred while running exchange rate job.", ex);
                 }
 
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
@@ -51,7 +52,7 @@ namespace WalletCore.Application.BackgroundJobs
             ICacheService cacheService,
             CancellationToken ct)
         {
-            _logger.LogInformation("Fetching ECB daily rates...");
+            _logger.LogInfoExt("Fetching ECB daily rates...");
 
             // Fetch fresh exchange rates from ECB (no caching)
             var exchangeRates = await ecbService.GetDailyRatesAsync(ct);
@@ -62,7 +63,7 @@ namespace WalletCore.Application.BackgroundJobs
             // Update cache for app usage
             await cacheService.UpdateExchangeRatesAsync(exchangeRates, ct);
 
-            _logger.LogInformation("Exchange rates updated and cached.");
+            _logger.LogInfoExt("Exchange rates updated and cached.");
         }
     }
 }

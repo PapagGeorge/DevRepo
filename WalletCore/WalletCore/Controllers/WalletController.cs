@@ -6,6 +6,7 @@ using WalletCore.Domain.Models;
 using WalletCore.Domain.Models.AdjustBalance;
 using WalletCore.Domain.Models.CreateWallet;
 using WalletCore.Domain.Models.GetBalance;
+using WalletCore.Logging;
 
 namespace WalletCore.Controllers
 {
@@ -31,11 +32,11 @@ namespace WalletCore.Controllers
         {
             var path = HttpContext.Request.Path.Value;
 
-            _logger.LogInformation($"{path} Request: {JsonSerializer.Serialize(request)}");
+            _logger.LogRequestExt("Request to WalletCore", request);
 
             var response = await _exceptionHandler.HandleAsync(func);
 
-            _logger.LogInformation($"{path} Response: {JsonSerializer.Serialize(response)}");
+            _logger.LogResponseExt("Response From WalletCore", response);
 
             return response;
         }

@@ -1,4 +1,5 @@
 ﻿using WalletCore.Domain.Models;
+using WalletCore.Logging;
 
 namespace WalletCore
 {
@@ -22,7 +23,7 @@ namespace WalletCore
             }
             catch (Exception ex) when (_businessExceptions.Any(t => t.IsInstanceOfType(ex)))
             {
-                _logger.LogWarning(ex, "Business exception");
+                _logger.LogWarningExt("Business exception", ex);
 
                 return new Response<T>
                 {
@@ -36,7 +37,7 @@ namespace WalletCore
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Technical exception");
+                _logger.LogErrorExt("Technical exception", ex);
 
                 return new Response<T>
                 {

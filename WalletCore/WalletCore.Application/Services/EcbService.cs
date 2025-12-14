@@ -5,6 +5,7 @@ using WalletCore.Application.Configuration;
 using WalletCore.Application.Interfaces;
 using WalletCore.Domain.DBModels;
 using WalletCore.Domain.Models.GetDailyRates;
+using WalletCore.Logging;
 
 namespace WalletCore.Application.Services
 {
@@ -22,12 +23,12 @@ namespace WalletCore.Application.Services
 
         public async Task<List<ExchangeRate>> GetDailyRatesAsync(CancellationToken ct = default)
         {
-            _logger.LogInformation("Fetching latest exchange rates from ECB");
+            _logger.LogInfoExt("Fetching latest exchange rates from ECB");
 
             var xml = await _ecbClient.GetXmlAsync<GesmesEnvelope>("/stats/eurofxref/eurofxref-daily.xml", ct);
             var response = xml.ParseRates();
 
-            _logger.LogInformation("Successfully fetched exchange rates");
+            _logger.LogInfoExt("Successfully fetched exchange rates");
             return response;
         }
     }

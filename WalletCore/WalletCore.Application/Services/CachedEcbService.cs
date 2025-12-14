@@ -4,6 +4,7 @@ using System.Text.Json;
 using WalletCore.Application.Interfaces;
 using WalletCore.Domain.DBModels;
 using WalletCore.Domain.Models.GetDailyRates;
+using WalletCore.Logging;
 
 namespace WalletCore.Application.Services
 {
@@ -28,13 +29,13 @@ namespace WalletCore.Application.Services
                 var json = await _cache.GetStringAsync(CacheKey);
                 if (!string.IsNullOrEmpty(json))
                 {
-                    _logger.LogInformation("Cache hit: returning ECB rates from Redis.");
+                    _logger.LogInfoExt("Cache hit: returning ECB rates from Redis.");
                     return JsonSerializer.Deserialize<List<ExchangeRate>>(json);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Failed to read from cache.");
+                _logger.LogWarningExt("Failed to read from cache.", ex);
             }
 
             var exchanggeRates = await _inner.GetDailyRatesAsync(); // Call API
@@ -49,7 +50,7 @@ namespace WalletCore.Application.Services
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Failed to write ECB rates to cache.");
+                _logger.LogWarningExt("Failed to write ECB rates to cache.", ex);
             }
 
             return exchanggeRates;
