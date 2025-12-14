@@ -96,7 +96,7 @@ namespace WalletCore.Logging
 
         public static GlobalLogBuilder CreateBaseBuilder()
         {
-            var http = HttpAccessor.Accessor.HttpContext;
+            var http = HttpAccessor.Accessor?.HttpContext;
             var transactionId = http?.Items["TransactionId"]?.ToString();
             var endpoint = http?.Request?.Path.Value;
             var assemblyName = Assembly.GetEntryAssembly()?.GetName().Name;
