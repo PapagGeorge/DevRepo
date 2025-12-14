@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\WalletCore.Application\WalletCore.Application.csproj" />
     <ProjectReference Include="..\WalletCore.Infrastructure\WalletCore.Infrastructure.csproj" />
+    <ProjectReference Include="..\WalletCore.Logging\WalletCore.Logging.csproj" />
   </ItemGroup>
 
 </Project>

@@ -10,6 +10,7 @@ namespace WalletCore.Infrastructure.HttpClientInfrastructure
         public static IServiceCollection AddECBHttpClient(this IServiceCollection services)
         {
             services.AddHttpClient<IECBClient, ECBHttpClient>()
+                .AddHttpMessageHandler<ExternalHttpLoggingHandler>()
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(GetCircuitBreakerPolicy());
 

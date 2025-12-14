@@ -16,7 +16,7 @@ namespace WalletCore
         {
             context.Request.EnableBuffering();
 
-            string transactionId = null;
+            string? transactionId = null;
 
             using (var reader = new StreamReader(context.Request.Body, leaveOpen: true))
             {
@@ -40,17 +40,11 @@ namespace WalletCore
                 }
             }
 
-            if (!string.IsNullOrEmpty(transactionId))
-            {
-                using (LogContext.PushProperty("TransactionId", transactionId))
-                {
-                    await _next(context);
-                }
-            }
-            else
-            {
-                await _next(context);
-            }
+            context.Items["TransactionId"] = transactionId;
+
+            context.Request.Headers["X-Transaction-Id"] = transactionId;
+
+            await _next(context);
         }
-    }   
+    }
 }

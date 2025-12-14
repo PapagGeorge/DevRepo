@@ -14,6 +14,7 @@ namespace WalletCore.Infrastructure
         public static IServiceCollection AddInfrastructure(
         this IServiceCollection services)
         {
+            services.AddTransient<ExternalHttpLoggingHandler>();
             services.AddECBHttpClient();
             services.AddDbContexts();
             services.AddScoped<IExchangeRateMergeRepository, ExchangeRateMergeRepository>();

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22 d17.14
+VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletCore", "WalletCore\WalletCore.csproj", "{03ADF3BC-39ED-4E62-843B-F04B6951945F}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletCore.Application", "WalletCore.Application\WalletCore.Application.csproj", "{F8F39876-CC50-436B-8DE7-617420819075}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletCore.Infrastructure", "WalletCore.Infrastructure\WalletCore.Infrastructure.csproj", "{A52AF957-5B8D-4F2E-AD9F-710AB8A854B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletCore.Logging", "WalletCore.Logging\WalletCore.Logging.csproj", "{04B4F2A6-CFED-400D-8882-8F1765515500}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{A52AF957-5B8D-4F2E-AD9F-710AB8A854B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A52AF957-5B8D-4F2E-AD9F-710AB8A854B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A52AF957-5B8D-4F2E-AD9F-710AB8A854B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04B4F2A6-CFED-400D-8882-8F1765515500}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04B4F2A6-CFED-400D-8882-8F1765515500}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04B4F2A6-CFED-400D-8882-8F1765515500}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04B4F2A6-CFED-400D-8882-8F1765515500}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

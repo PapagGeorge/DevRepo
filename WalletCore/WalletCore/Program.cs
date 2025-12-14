@@ -6,6 +6,7 @@ using WalletCore.Infrastructure.HttpClientInfrastructure;
 using WalletCore.Domain.Exceptions;
 using WalletCore.Infrastructure;
 using WalletCore.Infrastructure.Configuration;
+using WalletCore.Logging;
 
 namespace WalletCore
 {
@@ -59,6 +60,7 @@ namespace WalletCore
 
                 // Add services
                 builder.Services.AddControllers();
+                builder.Services.AddHttpContextAccessor();
                 builder.Services.AddInfrastructure();
                 builder.Services.AddApplicationServices(builder.Configuration);
 
