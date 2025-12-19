@@ -11,13 +11,18 @@ namespace WalletCore.Infrastructure.HttpClientInfrastructure
         public WalletDataServiceHttpClient(
             HttpClient httpClient,
             ILogger<WalletDataServiceHttpClient> logger,
-            IOptions<ECBClientConfig> config)
+            IOptions<WalletDataServiceConfig> config)
             : base(httpClient, logger)
         {
-            var ecbConfig = config.Value;
+            var walletDataConfig = config.Value;
 
-            if (string.IsNullOrWhiteSpace(ecbConfig.BaseAddress))
+            if (string.IsNullOrWhiteSpace(walletDataConfig.BaseAddress))
                 throw new ArgumentException("WalletCore.DataService BaseAddress is required", nameof(config));
+
+            HttpClient.BaseAddress = new Uri(walletDataConfig.BaseAddress);
+            HttpClient.Timeout = TimeSpan.FromSeconds(walletDataConfig.TimeoutSeconds ?? 30);
+            HttpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+            HttpClient.DefaultRequestHeaders.Add("User-Agent", walletDataConfig.UserAgent ?? "WalletCore/1.0");
         }
         public Task<Wallet> GetWalletById(Guid id, CancellationToken ct = default)
         {
