@@ -26,7 +26,7 @@ namespace WalletCore.DataService.Infrastructure
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host("rabbitmq", "/", h =>
+                    cfg.Host("localhost", "/", h =>
                     {
                         h.Username("guest");
                         h.Password("guest");

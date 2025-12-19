@@ -17,6 +17,16 @@ namespace WalletCore.Infrastructure.HttpClientInfrastructure
             return services;
         }
 
+        public static IServiceCollection AddWalletDataServiceHttpClient(this IServiceCollection services)
+        {
+            services.AddHttpClient<IWalletDataServiceHttpClient, WalletDataServiceHttpClient>()
+                .AddHttpMessageHandler<ExternalHttpLoggingHandler>()
+                .AddPolicyHandler(GetRetryPolicy())
+                .AddPolicyHandler(GetCircuitBreakerPolicy());
+
+            return services;
+        }
+
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
         {
             return HttpPolicyExtensions

@@ -14,30 +14,32 @@ namespace WalletCore.Application.Services
         private readonly IWalletRepository _walletRepository;
         private readonly IWalletBalanceStrategyFactory _strategyFactory;
         private readonly IEcbRateConverter _rateConverter;
+        private readonly ICommandPublisher _publisher;
+        private readonly IWalletDataServiceHttpClient _walletDataServiceHttpClient;
 
         public WalletService(
             IWalletRepository walletRepository,
             IWalletBalanceStrategyFactory strategyFactory,
-            IEcbRateConverter rateConverter)
+            IEcbRateConverter rateConverter,
+            ICommandPublisher publisher,
+            IWalletDataServiceHttpClient walletDataServiceHttpClient)
         {
             _walletRepository = walletRepository;
             _strategyFactory = strategyFactory;
             _rateConverter = rateConverter;
+            _publisher = publisher;
+            _walletDataServiceHttpClient = walletDataServiceHttpClient;
         }
 
         public async Task<CreateWalletResponse> CreateWalletAsync(CreateWalletRequest request)
         {
-            var wallet = new Wallet
-            {
-                Currency = request.Currency,
-                Balance = 0m
-            };
+            var newWalletId = Guid.NewGuid();
 
-            await _walletRepository.AddAsync(wallet);
+            await _publisher.PublishCreateWalletAsync(newWalletId, request.Currency);
 
             return new CreateWalletResponse
             {
-                WalletId = wallet.Id,
+                WalletId = newWalletId,
                 IsSuccessful = true,
                 Message = "Wallet created successfully."
             };
@@ -45,7 +47,7 @@ namespace WalletCore.Application.Services
 
         public async Task<GetBalanceResponse> GetBalanceAsync(GetBalanceRequest request)
         {
-            var wallet = await _walletRepository.GetByIdAsync(request.WalletId)
+            var wallet = await _walletDataServiceHttpClient.GetWalletById(request.WalletId)
                 ?? throw new WalletException.WalletNotFoundException(request.WalletId);
 
             string targetCurrency = string.IsNullOrWhiteSpace(request.ConvertToCurrency)
@@ -79,7 +81,7 @@ namespace WalletCore.Application.Services
 
         public async Task<AdjustBalanceResponse> AdjustBalanceAsync(AdjustBalanceRequest request)
         {
-            var wallet = await _walletRepository.GetByIdAsync(request.WalletId)
+            var wallet = await _walletDataServiceHttpClient.GetWalletById(request.WalletId)
                 ?? throw new WalletException.WalletNotFoundException(request.WalletId);
 
             var strategy = _strategyFactory.Create(request.AdjustmentStrategy);
@@ -100,7 +102,7 @@ namespace WalletCore.Application.Services
             var walletAdjustmentResult = strategy.Apply(walletAdjustmentOperation);
             var oldBalance = wallet.Balance;
 
-            await _walletRepository.UpdateBalanceAsync(wallet, walletAdjustmentResult.NewBalance);
+            await _publisher.PublishUpdateWalletBalanceAsync(wallet.Id, walletAdjustmentResult.NewBalance);
 
             return new AdjustBalanceResponse
             {

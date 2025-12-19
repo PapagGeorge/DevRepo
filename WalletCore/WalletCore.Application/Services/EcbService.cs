@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using WalletCore.Application.Configuration;
+﻿using Microsoft.Extensions.Logging;
 using WalletCore.Application.Interfaces;
 using WalletCore.Domain.DBModels;
 using WalletCore.Domain.Models.GetDailyRates;
@@ -14,7 +11,6 @@ namespace WalletCore.Application.Services
         private readonly IECBClient _ecbClient;
         private readonly ILogger<EcbService> _logger;
 
-        // Constructor injection of typed client - clean and type-safe!
         public EcbService(IECBClient ecbClient, ILogger<EcbService> logger)
         {
             _ecbClient = ecbClient;

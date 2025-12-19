@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -16,9 +17,23 @@ namespace WalletCore.Infrastructure
         {
             services.AddTransient<ExternalHttpLoggingHandler>();
             services.AddECBHttpClient();
+            services.AddWalletDataServiceHttpClient();
             services.AddDbContexts();
             services.AddScoped<IExchangeRateMergeRepository, ExchangeRateMergeRepository>();
             services.AddScoped<IWalletRepository, WalletRepository>();
+            services.AddMassTransit(x =>
+            {
+                // No consumers, just publishers
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("localhost", "/", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+                });
+            });
+            services.AddScoped<ICommandPublisher, CommandPublisher>();
             return services;
         }
 

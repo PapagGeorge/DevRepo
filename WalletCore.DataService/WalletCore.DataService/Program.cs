@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Serilog;
-using WalletCore.DataService.Infrastructure.Configuration;
 using WalletCore.DataService.Infrastructure;
+using WalletCore.DataService.Infrastructure.Configuration;
+using WalletCore.DataService.Infrastructure.Interfaces;
 
 namespace WalletCore.DataService
 {
@@ -9,18 +11,19 @@ namespace WalletCore.DataService
     {
         public static void Main(string[] args)
         {
-            // Create bootstrap logger for startup errors
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
                 .CreateBootstrapLogger();
 
             try
             {
-                Log.Information("Starting WalletCore application");
+                Log.Information("Starting WalletCore.DataService");
 
                 var builder = WebApplication.CreateBuilder(args);
 
-                // Configure Serilog from appsettings.json
+                // ----------------------------
+                // Serilog
+                // ----------------------------
                 builder.Host.UseSerilog((context, services, configuration) =>
                 {
                     configuration
@@ -28,52 +31,63 @@ namespace WalletCore.DataService
                         .ReadFrom.Services(services)
                         .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
                         .Enrich.WithProperty("Application", "WalletCore.DataService");
-                    Serilog.Debugging.SelfLog.Enable(Console.Error);
                 });
 
+                // ----------------------------
+                // CORS (internal service)
+                // ----------------------------
                 builder.Services.AddCors(options =>
                 {
                     options.AddPolicy("AllowAll", policy =>
-                    {
-                        policy
-                            .AllowAnyOrigin()
-                            .AllowAnyMethod()
-                            .AllowAnyHeader();
-                    });
+                        policy.AllowAnyOrigin()
+                              .AllowAnyMethod()
+                              .AllowAnyHeader());
                 });
 
-                builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("ConnectionStrings"));
+                // ----------------------------
+                // Configuration
+                // ----------------------------
+                builder.Services.Configure<DatabaseOptions>(
+                    builder.Configuration.GetSection("ConnectionStrings"));
 
-                // Add services
-                builder.Services.AddHttpContextAccessor();
+                // ----------------------------
+                // Infrastructure (EF + MassTransit + Repositories)
+                // ----------------------------
                 builder.Services.AddInfrastructure();
 
                 var app = builder.Build();
 
-                // Add Serilog request logging middleware
-                app.UseSerilogRequestLogging(options =>
+                // ----------------------------
+                // Middleware
+                // ----------------------------
+                app.UseSerilogRequestLogging();
+                app.UseCors("AllowAll");
+
+                // ----------------------------
+                // Minimal API
+                // ----------------------------
+                app.MapGet("/wallets/{id:guid}", async (
+                    Guid id,
+                    IWalletRepository walletRepository) =>
                 {
-                    options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
-                    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
-                    {
-                        diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
-                        diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
-                        diagnosticContext.Set("RemoteIpAddress", httpContext.Connection.RemoteIpAddress);
-                        diagnosticContext.Set("UserAgent", httpContext.Request.Headers["User-Agent"].ToString());
-                    };
+                    var wallet = await walletRepository.GetByIdAsync(id);
+
+                    return wallet is null
+                        ? Results.NotFound()
+                        : Results.Ok(new
+                        {
+                            wallet.Id,
+                            wallet.Balance,
+                            wallet.Currency
+                        });
                 });
 
-                app.UseCors("AllowAll");
-                app.UseHttpsRedirection();
-                app.UseAuthorization();
-                app.MapControllers();
-
-                Log.Information("WalletCore.DataService application started successfully");
+                Log.Information("WalletCore.DataService started successfully");
                 app.Run();
             }
             catch (Exception ex)
             {
-                Log.Fatal(ex, "WalletCore.DataService unexpectedly");
+                Log.Fatal(ex, "WalletCore.DataService terminated unexpectedly");
                 throw;
             }
             finally
