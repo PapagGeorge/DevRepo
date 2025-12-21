@@ -58,7 +58,7 @@ namespace WalletCore.Application.Services
 
         public async Task<GetBalanceResponse> GetBalanceAsync(GetBalanceRequest request)
         {
-            var wallet = await _walletDataServiceHttpClient.GetWalletById(request.WalletId)
+            var wallet = await _walletDataServiceHttpClient.GetWalletByIdAsync(request.WalletId)
                 ?? throw new WalletException.WalletNotFoundException(request.WalletId);
 
             string targetCurrency = string.IsNullOrWhiteSpace(request.ConvertToCurrency)
@@ -92,9 +92,10 @@ namespace WalletCore.Application.Services
 
         public async Task<AdjustBalanceResponse> AdjustBalanceAsync(AdjustBalanceRequest request)
         {
-            var wallet = await _walletDataServiceHttpClient.GetWalletById(request.WalletId)
+            var wallet = await _walletDataServiceHttpClient.GetWalletByIdAsync(request.WalletId)
                 ?? throw new WalletException.WalletNotFoundException(request.WalletId);
 
+            var oldBalance = wallet.Balance;
             var strategy = _strategyFactory.Create(request.AdjustmentStrategy);
 
             var conversion = await _rateConverter.ConvertAsync(new CurrencyConversionRequest
@@ -111,17 +112,17 @@ namespace WalletCore.Application.Services
                 Currency = wallet.Currency
             };
             var walletAdjustmentResult = strategy.Apply(walletAdjustmentOperation);
-            var oldBalance = wallet.Balance;
 
-            await _publisher.PublishUpdateWalletBalanceAsync(wallet.Id, walletAdjustmentResult.NewBalance);
+            var walletDataRequest = new AdjustBalanceRequestDto {Wallet = wallet, NewBalance = walletAdjustmentResult.NewBalance };
 
+            var result = await _walletDataServiceHttpClient.AdjustBalanceAsync(walletDataRequest);
             return new AdjustBalanceResponse
             {
-                WalletId = wallet.Id,
+                WalletId = result.WalletId,
                 OldBalance = oldBalance,
-                NewBalance = walletAdjustmentResult.NewBalance,
+                NewBalance = result.NewBalance,
                 AppliedAmount = conversion.ConvertedAmount,
-                WalletCurrency = wallet.Currency,
+                WalletCurrency = result.WalletCurrency,
                 IsSuccessful = true,
                 AdjustmentStrategy = request.AdjustmentStrategy,
                 Message = request.AdjustmentStrategy.ToMessage()

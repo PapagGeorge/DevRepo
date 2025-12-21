@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using WalletCore.DataService.Consumers;
 using WalletCore.DataService.Infrastructure.Configuration;
 using WalletCore.DataService.Infrastructure.Consumers;
 using WalletCore.DataService.Infrastructure.Interfaces;
@@ -21,7 +20,6 @@ namespace WalletCore.DataService.Infrastructure
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<CreateWalletConsumer>();
-                x.AddConsumer<UpdateWalletBalanceConsumer>();
                 x.AddConsumer<MergeExchangeRatesConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>

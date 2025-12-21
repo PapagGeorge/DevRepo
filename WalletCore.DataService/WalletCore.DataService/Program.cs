@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Serilog;
+using WalletCore.DataService.DataContracts;
+using WalletCore.DataService.DataContracts.Models.AdjustBalance;
+using WalletCore.DataService.DataContracts.Models.CreateWallet;
 using WalletCore.DataService.Infrastructure;
 using WalletCore.DataService.Infrastructure.Configuration;
 using WalletCore.DataService.Infrastructure.Interfaces;
@@ -80,6 +83,42 @@ namespace WalletCore.DataService
                             wallet.Balance,
                             wallet.Currency
                         });
+                });
+
+                app.MapPost("/wallet", async (
+                CreateWalletRequest request,
+                IWalletRepository walletRepository) =>
+                {
+                    var wallet = new Wallet
+                    {
+                        Id = Guid.NewGuid(),
+                        Currency = request.Currency,
+                        Balance = 0m
+                    };
+
+                    await walletRepository.AddAsync(wallet);
+
+                    return Results.Created($"/wallet/{wallet.Id}", new CreateWalletResponse
+                    {
+                        WalletId = wallet.Id,
+                        IsSuccessful = true,
+                        Message = $"Wallet with {wallet.Id} created syccessfully"
+                    });
+                });
+
+                app.MapPost("/wallet/balance", async (
+                AdjustBalanceRequest request,
+                IWalletRepository walletRepository) =>
+                {
+                    await walletRepository.UpdateBalanceAsync(request.Wallet, request.NewBalance);
+
+                    return Results.Created($"/wallet/balance", new AdjustBalanceResponse
+                    {
+                        WalletId = request.Wallet.Id,
+                        IsSuccessful = true,
+                        NewBalance = request.NewBalance,
+                        WalletCurrency = request.Wallet.Currency
+                    });
                 });
 
                 Log.Information("WalletCore.DataService started successfully");
