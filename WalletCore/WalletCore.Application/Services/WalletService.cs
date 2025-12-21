@@ -34,15 +34,26 @@ namespace WalletCore.Application.Services
         public async Task<CreateWalletResponse> CreateWalletAsync(CreateWalletRequest request)
         {
             var newWalletId = Guid.NewGuid();
-
-            await _publisher.PublishCreateWalletAsync(newWalletId, request.Currency);
-
-            return new CreateWalletResponse
+            try
             {
-                WalletId = newWalletId,
-                IsSuccessful = true,
-                Message = "Wallet created successfully."
-            };
+                await _publisher.PublishCreateWalletAsync(newWalletId, request.Currency);
+
+                return new CreateWalletResponse
+                {
+                    WalletId = newWalletId,
+                    IsSuccessful = true,
+                    Message = "Wallet created successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CreateWalletResponse
+                {
+                    WalletId = newWalletId,
+                    IsSuccessful = false,
+                    Message = $"Wallet creation failed: {ex.Message}"
+                };
+            }
         }
 
         public async Task<GetBalanceResponse> GetBalanceAsync(GetBalanceRequest request)

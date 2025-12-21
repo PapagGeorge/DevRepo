@@ -13,22 +13,46 @@ namespace WalletCore.Infrastructure
             _publishEndpoint = publishEndpoint;
         }
 
-        public Task PublishCreateWalletAsync(Guid walletId, string currency)
+        public async Task PublishCreateWalletAsync(Guid walletId, string currency)
         {
             var command = new CreateWalletCommand(walletId, currency);
-            return _publishEndpoint.Publish(command);
+
+            try
+            {
+                await _publishEndpoint.Publish(command);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task PublishUpdateWalletBalanceAsync(Guid walletId, decimal newBalance)
+        public async Task PublishUpdateWalletBalanceAsync(Guid walletId, decimal newBalance)
         {
             var command = new UpdateWalletBalanceCommand(walletId, newBalance);
-            return _publishEndpoint.Publish(command);
+
+            try
+            {
+                await _publishEndpoint.Publish(command);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task PublishMergeExchangeRatesAsync(IReadOnlyCollection<ExchangeRateDto> rates)
+        public async Task PublishMergeExchangeRatesAsync(IReadOnlyCollection<ExchangeRateDto> rates)
         {
             var command = new MergeExchangeRatesCommand(rates);
-            return _publishEndpoint.Publish(command);
+
+            try
+            {
+                await _publishEndpoint.Publish(command);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

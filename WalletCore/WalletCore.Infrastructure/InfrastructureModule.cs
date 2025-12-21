@@ -23,7 +23,6 @@ namespace WalletCore.Infrastructure
             services.AddScoped<IWalletRepository, WalletRepository>();
             services.AddMassTransit(x =>
             {
-                // No consumers, just publishers
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.Host("localhost", "/", h =>
@@ -31,6 +30,11 @@ namespace WalletCore.Infrastructure
                         h.Username("guest");
                         h.Password("guest");
                     });
+
+                    // Optional: retry on failure
+                    cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
+
+                    cfg.ConfigureEndpoints(context);
                 });
             });
             services.AddScoped<ICommandPublisher, CommandPublisher>();
