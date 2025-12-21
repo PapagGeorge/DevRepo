@@ -1,4 +1,5 @@
 ﻿using System;
+using WalletCore.Contrtacts.DBModels;
 
 namespace WalletCore.Contrtacts.CommandContracts
 {
@@ -6,6 +7,5 @@ namespace WalletCore.Contrtacts.CommandContracts
     /// Command to create a new wallet
     /// </summary>
     public record CreateWalletCommand(
-        Guid WalletId,
-        string Currency);
+        Wallet wallet);
 }

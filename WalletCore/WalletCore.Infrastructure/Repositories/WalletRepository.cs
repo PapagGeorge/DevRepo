@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WalletCore.Application.Interfaces;
-using WalletCore.Domain.DBModels;
+using WalletCore.Contrtacts.DBModels;
 using WalletCore.Domain.Exceptions;
 using WalletCore.Logging;
 

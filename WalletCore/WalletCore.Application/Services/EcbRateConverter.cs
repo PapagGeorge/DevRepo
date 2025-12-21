@@ -1,7 +1,6 @@
 ﻿using WalletCore.Application.Interfaces;
-using WalletCore.Domain.DBModels;
-using WalletCore.Domain.Models.EcbRateConverter;
-using WalletCore.Domain.Models.GetDailyRates;
+using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contrtacts.EcbRateConverter;
 
 namespace WalletCore.Application.Services
 {

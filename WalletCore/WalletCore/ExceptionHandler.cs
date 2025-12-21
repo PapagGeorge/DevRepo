@@ -1,4 +1,4 @@
-﻿using WalletCore.Domain.Models;
+﻿using WalletCore.Contrtacts.Models;
 using WalletCore.Logging;
 
 namespace WalletCore

@@ -1,6 +1,6 @@
-﻿using WalletCore.Domain.DBModels;
-using WalletCore.Domain.Models.AdjustBalance;
-using WalletCore.Domain.Models.CreateWallet;
+﻿using WalletCore.Contrtacts.AdjustBalance;
+using WalletCore.Contrtacts.CreateWallet;
+using WalletCore.Contrtacts.DBModels;
 
 namespace WalletCore.Application.Interfaces
 {

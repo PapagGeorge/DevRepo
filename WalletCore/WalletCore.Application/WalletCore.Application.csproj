@@ -13,11 +13,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.1" />
     <PackageReference Include="Scrutor" Version="7.0.0" />
-    <PackageReference Include="WalletCore.Contracts" Version="1.0.1" />
+    <PackageReference Include="WalletCore.Contracts" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WalletCore.Domain\WalletCore.Domain.csproj" />
     <ProjectReference Include="..\WalletCore.Logging\WalletCore.Logging.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,4 @@
-﻿using WalletCore.Domain.Models.WalletStrategy;
+﻿using WalletCore.Contrtacts.WalletStrategy;
 
 namespace WalletCore.Application.Interfaces
 {

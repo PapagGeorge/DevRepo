@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 using WalletCore.Application.Interfaces;
-using WalletCore.Domain.DBModels;
+using WalletCore.Contrtacts.DBModels;
 
 namespace WalletCore.Application.Services
 {

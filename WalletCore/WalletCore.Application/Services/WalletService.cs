@@ -1,11 +1,11 @@
 ﻿using WalletCore.Application.Interfaces;
-using WalletCore.Domain.DBModels;
+using WalletCore.Contrtacts.AdjustBalance;
+using WalletCore.Contrtacts.CreateWallet;
+using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contrtacts.EcbRateConverter;
+using WalletCore.Contrtacts.GetBalance;
+using WalletCore.Contrtacts.WalletStrategy;
 using WalletCore.Domain.Exceptions;
-using WalletCore.Domain.Models.AdjustBalance;
-using WalletCore.Domain.Models.CreateWallet;
-using WalletCore.Domain.Models.EcbRateConverter;
-using WalletCore.Domain.Models.GetBalance;
-using WalletCore.Domain.Models.WalletStrategy;
 
 namespace WalletCore.Application.Services
 {
@@ -33,14 +33,14 @@ namespace WalletCore.Application.Services
 
         public async Task<CreateWalletResponse> CreateWalletAsync(CreateWalletRequest request)
         {
-            var newWalletId = Guid.NewGuid();
+            var newWallet = new Wallet { Id = Guid.NewGuid(), Balance = 0, Currency = request.Currency };
             try
             {
-                await _publisher.PublishCreateWalletAsync(newWalletId, request.Currency);
+                await _publisher.PublishCreateWalletAsync(newWallet);
 
                 return new CreateWalletResponse
                 {
-                    WalletId = newWalletId,
+                    WalletId = newWallet.Id,
                     IsSuccessful = true,
                     Message = "Wallet created successfully."
                 };
@@ -49,7 +49,6 @@ namespace WalletCore.Application.Services
             {
                 return new CreateWalletResponse
                 {
-                    WalletId = newWalletId,
                     IsSuccessful = false,
                     Message = $"Wallet creation failed: {ex.Message}"
                 };

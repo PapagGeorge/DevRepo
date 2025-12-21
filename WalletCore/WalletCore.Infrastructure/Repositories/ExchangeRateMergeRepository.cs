@@ -2,9 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Data;
-using System.Text;
 using WalletCore.Application.Interfaces;
-using WalletCore.Domain.DBModels;
+using WalletCore.Contrtacts.DBModels;
 using WalletCore.Logging;
 
 namespace WalletCore.Infrastructure.Repositories

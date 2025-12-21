@@ -1,6 +1,6 @@
-﻿using WalletCore.Domain.DBModels;
-using WalletCore.Domain.Models.AdjustBalance;
-using WalletCore.Domain.Models.GetDailyRates;
+﻿using WalletCore.Contrtacts.AdjustBalance;
+using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contrtacts.GetDailyRates;
 
 namespace WalletCore.Application
 {

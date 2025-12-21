@@ -1,7 +1,6 @@
 ﻿using WalletCore.Application.Interfaces;
+using WalletCore.Contrtacts.AdjustBalance;
 using WalletCore.Domain.Exceptions;
-using WalletCore.Domain.Models;
-using WalletCore.Domain.Models.AdjustBalance;
 
 namespace WalletCore.Application.Strategies
 {

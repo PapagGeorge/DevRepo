@@ -1,4 +1,4 @@
-﻿using WalletCore.Domain.DBModels;
+﻿using WalletCore.Contrtacts.DBModels;
 
 namespace WalletCore.Application.Interfaces
 {

@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using WalletCore.Application.Interfaces;
 using WalletCore.Contrtacts.CommandContracts;
+using WalletCore.Contrtacts.DBModels;
 
 namespace WalletCore.Infrastructure
 {
@@ -13,23 +14,9 @@ namespace WalletCore.Infrastructure
             _publishEndpoint = publishEndpoint;
         }
 
-        public async Task PublishCreateWalletAsync(Guid walletId, string currency)
+        public async Task PublishCreateWalletAsync(Wallet wallet)
         {
-            var command = new CreateWalletCommand(walletId, currency);
-
-            try
-            {
-                await _publishEndpoint.Publish(command);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public async Task PublishUpdateWalletBalanceAsync(Guid walletId, decimal newBalance)
-        {
-            var command = new UpdateWalletBalanceCommand(walletId, newBalance);
+            var command = new CreateWalletCommand(wallet);
 
             try
             {

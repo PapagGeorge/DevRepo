@@ -1,6 +1,6 @@
 ﻿using WalletCore.Application.Interfaces;
+using WalletCore.Contrtacts.WalletStrategy;
 using WalletCore.Domain.Exceptions;
-using WalletCore.Domain.Models.WalletStrategy;
 
 namespace WalletCore.Application.Strategies
 {

@@ -3,8 +3,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WalletCore.Application.Interfaces;
 using WalletCore.Application.Services;
-using WalletCore.Domain.DBModels;
-using WalletCore.Domain.Models.GetDailyRates;
 using WalletCore.Logging;
 
 namespace WalletCore.Application.BackgroundJobs

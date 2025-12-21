@@ -1,12 +1,11 @@
 ﻿using WalletCore.Contrtacts.CommandContracts;
-using WalletCore.Domain.DBModels;
+using WalletCore.Contrtacts.DBModels;
 
 namespace WalletCore.Application.Interfaces
 {
     public interface ICommandPublisher
     {
-        Task PublishCreateWalletAsync(Guid walletId, string currency);
-        Task PublishUpdateWalletBalanceAsync(Guid walletId, decimal newBalance);
+        Task PublishCreateWalletAsync(Wallet wallet);
         Task PublishMergeExchangeRatesAsync(IReadOnlyCollection<ExchangeRateDto> rates);
     }
 }

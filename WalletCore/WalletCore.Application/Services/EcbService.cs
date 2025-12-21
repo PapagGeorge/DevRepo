@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using WalletCore.Application.Interfaces;
-using WalletCore.Domain.DBModels;
-using WalletCore.Domain.Models.GetDailyRates;
+using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contrtacts.GetDailyRates;
 using WalletCore.Logging;
 
 namespace WalletCore.Application.Services
