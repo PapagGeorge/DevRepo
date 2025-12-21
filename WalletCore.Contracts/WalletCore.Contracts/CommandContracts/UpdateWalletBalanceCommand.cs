@@ -1,4 +1,6 @@
-﻿namespace WalletCore.Contrtacts.CommandContracts
+﻿using System;
+
+namespace WalletCore.Contrtacts.CommandContracts
 {
     /// <summary>
     /// Command to update the balance of an existing wallet.
