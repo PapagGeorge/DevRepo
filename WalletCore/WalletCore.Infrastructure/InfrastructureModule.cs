@@ -1,12 +1,7 @@
 ﻿using MassTransit;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using WalletCore.Application.Interfaces;
-using WalletCore.Infrastructure.Configuration;
 using WalletCore.Infrastructure.HttpClientInfrastructure;
-using WalletCore.Infrastructure.Repositories;
 
 namespace WalletCore.Infrastructure
 {
@@ -18,9 +13,6 @@ namespace WalletCore.Infrastructure
             services.AddTransient<ExternalHttpLoggingHandler>();
             services.AddECBHttpClient();
             services.AddWalletDataServiceHttpClient();
-            services.AddDbContexts();
-            services.AddScoped<IExchangeRateMergeRepository, ExchangeRateMergeRepository>();
-            services.AddScoped<IWalletRepository, WalletRepository>();
             services.AddMassTransit(x =>
             {
                 x.UsingRabbitMq((context, cfg) =>
@@ -39,18 +31,6 @@ namespace WalletCore.Infrastructure
             });
             services.AddScoped<ICommandPublisher, CommandPublisher>();
             return services;
-        }
-
-        private static void AddDbContexts(this IServiceCollection services)
-        {
-            services.AddDbContext<WalletDbContext>((serviceProvider, options) =>
-            {
-                var dbOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-                options.UseSqlServer(dbOptions.ExchangeRateDb, sql =>
-                {
-                    sql.MigrationsAssembly(typeof(WalletDbContext).Assembly.FullName);
-                });
-            });
         }
     }
 }

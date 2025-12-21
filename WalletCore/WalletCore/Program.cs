@@ -1,13 +1,7 @@
-using Microsoft.Extensions.Options;
 using Serilog;
 using WalletCore.Application;
 using WalletCore.Application.Configuration;
-using WalletCore.Infrastructure.HttpClientInfrastructure;
-using WalletCore.Domain.Exceptions;
 using WalletCore.Infrastructure;
-using WalletCore.Infrastructure.Configuration;
-using WalletCore.Logging;
-using MassTransit;
 
 namespace WalletCore
 {
@@ -57,7 +51,6 @@ namespace WalletCore
                 // Configure options
                 builder.Services.Configure<ECBClientConfig>(builder.Configuration.GetSection("ECBConfig"));
                 builder.Services.Configure<WalletDataServiceConfig>(builder.Configuration.GetSection("WalletDataServiceConfig"));
-                builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("ConnectionStrings"));
                 builder.Services.Configure<RedisOptions>(builder.Configuration.GetSection("Redis"));
 
                 // Add services
