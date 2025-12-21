@@ -1,4 +1,4 @@
-﻿using WalletCore.DataService.DataContracts;
+﻿using WalletCore.Contrtacts.DBModels;
 
 namespace WalletCore.DataService.Infrastructure.Interfaces
 {

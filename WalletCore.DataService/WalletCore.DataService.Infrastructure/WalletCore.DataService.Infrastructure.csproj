@@ -14,11 +14,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="WalletCore.Contracts" Version="1.0.1" />
+    <PackageReference Include="WalletCore.Contracts" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WalletCore.DataService.DataContracts\WalletCore.DataService.DataContracts.csproj" />
     <ProjectReference Include="..\WalletCore.DataService.Logging\WalletCore.DataService.Logging.csproj" />
   </ItemGroup>
 

@@ -1,8 +1,8 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
-using WalletCore.DataService.DataContracts;
 using WalletCore.Contrtacts.CommandContracts;
 using WalletCore.DataService.Infrastructure.Interfaces;
+using WalletCore.Contrtacts.DBModels;
 
 namespace WalletCore.DataService.Infrastructure.Consumers
 {
@@ -25,20 +25,13 @@ namespace WalletCore.DataService.Infrastructure.Consumers
 
             _logger.LogInformation(
                 "Consuming CreateWalletCommand for WalletId {WalletId}",
-                message.WalletId);
+                message.wallet.Id);
 
-            var wallet = new Wallet
-            {
-                Id = message.WalletId,
-                Currency = message.Currency,
-                Balance = 0m
-            };
-
-            await _walletRepository.AddAsync(wallet);
+            await _walletRepository.AddAsync(message.wallet);
 
             _logger.LogInformation(
                 "Wallet {WalletId} created successfully",
-                message.WalletId);
+                message.wallet.Id);
         }
     }
 }

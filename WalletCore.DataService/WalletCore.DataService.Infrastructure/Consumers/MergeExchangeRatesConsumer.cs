@@ -1,7 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
-using WalletCore.DataService.DataContracts;
 using WalletCore.Contrtacts.CommandContracts;
+using WalletCore.Contrtacts.DBModels;
 using WalletCore.DataService.Infrastructure.Interfaces;
 
 namespace WalletCore.DataService.Infrastructure.Consumers

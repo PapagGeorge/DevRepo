@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Serilog;
-using WalletCore.DataService.DataContracts;
-using WalletCore.DataService.DataContracts.Models.AdjustBalance;
-using WalletCore.DataService.DataContracts.Models.CreateWallet;
+using WalletCore.Contrtacts.AdjustBalance;
+using WalletCore.Contrtacts.CreateWallet;
+using WalletCore.Contrtacts.DBModels;
 using WalletCore.DataService.Infrastructure;
 using WalletCore.DataService.Infrastructure.Configuration;
 using WalletCore.DataService.Infrastructure.Interfaces;
@@ -107,7 +107,7 @@ namespace WalletCore.DataService
                 });
 
                 app.MapPost("/wallet/balance", async (
-                AdjustBalanceRequest request,
+                AdjustBalanceRequestDto request,
                 IWalletRepository walletRepository) =>
                 {
                     await walletRepository.UpdateBalanceAsync(request.Wallet, request.NewBalance);
