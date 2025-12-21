@@ -1,5 +1,5 @@
 ﻿using MassTransit;
-using WalletCore.DataService.DataContracts.CommandContracts;
+using WalletCore.Contrtacts.CommandContracts;
 using WalletCore.DataService.Infrastructure.Interfaces;
 
 namespace WalletCore.DataService.Consumers

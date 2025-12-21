@@ -1,4 +1,4 @@
-﻿using WalletCore.Domain.CommandContracts;
+﻿using WalletCore.Contrtacts.CommandContracts;
 using WalletCore.Domain.DBModels;
 
 namespace WalletCore.Application.Interfaces
