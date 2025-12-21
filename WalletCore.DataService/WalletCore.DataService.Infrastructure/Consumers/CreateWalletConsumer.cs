@@ -30,7 +30,7 @@ namespace WalletCore.DataService.Infrastructure.Consumers
             await _walletRepository.AddAsync(message.wallet);
 
             _logger.LogInformation(
-                "Wallet {WalletId} created successfully",
+                "Wallet with Id: {WalletId} created successfully",
                 message.wallet.Id);
         }
     }
