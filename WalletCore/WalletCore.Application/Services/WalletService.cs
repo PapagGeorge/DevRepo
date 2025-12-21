@@ -11,20 +11,17 @@ namespace WalletCore.Application.Services
 {
     public class WalletService : IWalletService
     {
-        private readonly IWalletRepository _walletRepository;
         private readonly IWalletBalanceStrategyFactory _strategyFactory;
         private readonly IEcbRateConverter _rateConverter;
         private readonly ICommandPublisher _publisher;
         private readonly IWalletDataServiceHttpClient _walletDataServiceHttpClient;
 
         public WalletService(
-            IWalletRepository walletRepository,
             IWalletBalanceStrategyFactory strategyFactory,
             IEcbRateConverter rateConverter,
             ICommandPublisher publisher,
             IWalletDataServiceHttpClient walletDataServiceHttpClient)
         {
-            _walletRepository = walletRepository;
             _strategyFactory = strategyFactory;
             _rateConverter = rateConverter;
             _publisher = publisher;
