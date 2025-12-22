@@ -53,10 +53,13 @@ namespace WalletCore.DataService
                 builder.Services.Configure<DatabaseOptions>(
                     builder.Configuration.GetSection("ConnectionStrings"));
 
+                builder.Services.Configure<RedisOptions>(
+                    builder.Configuration.GetSection("Redis"));
+
                 // ----------------------------
                 // Infrastructure (EF + MassTransit + Repositories)
                 // ----------------------------
-                builder.Services.AddInfrastructure();
+                builder.Services.AddInfrastructure(builder.Configuration);
 
                 var app = builder.Build();
 

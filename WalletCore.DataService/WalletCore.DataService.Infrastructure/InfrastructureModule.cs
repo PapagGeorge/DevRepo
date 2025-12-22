@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using WalletCore.DataService.Infrastructure.Configuration;
@@ -12,7 +13,8 @@ namespace WalletCore.DataService.Infrastructure
     public static class InfrastructureModule
     {
         public static IServiceCollection AddInfrastructure(
-        this IServiceCollection services)
+        this IServiceCollection services,
+        IConfiguration configuration)
         {
             services.AddDbContexts();
             services.AddScoped<IExchangeRateMergeRepository, ExchangeRateMergeRepository>();
@@ -33,6 +35,15 @@ namespace WalletCore.DataService.Infrastructure
                     cfg.ConfigureEndpoints(context);
                 });
             });
+
+            // Register Redis Cache
+            services.AddStackExchangeRedisCache(options =>
+            {
+                var redisOptions = configuration.GetSection("Redis").Get<RedisOptions>();
+                options.Configuration = redisOptions.ConnectionString;
+                options.InstanceName = redisOptions.InstanceName;
+            });
+
             return services;
         }
 

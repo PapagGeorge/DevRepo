@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
-using WalletCore.Application.Interfaces;
 using WalletCore.Contrtacts.DBModels;
+using WalletCore.DataService.Services.Infrastructure.Interfaces;
 
-namespace WalletCore.Application.Services
+namespace WalletCore.DataService.Services.Infrastructure
 {
     public class CacheService : ICacheService
     {
@@ -13,6 +13,14 @@ namespace WalletCore.Application.Services
         public CacheService(IDistributedCache cache)
         {
             _cache = cache;
+        }
+
+        public async Task UpdateExchangeRatesAsync(IEnumerable<ExchangeRate> rates, CancellationToken ct = default)
+        {
+            var json = JsonSerializer.Serialize(rates);
+            await _cache.SetStringAsync(CacheKey, json,
+                new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2) },
+                ct);
         }
 
         public async Task<List<ExchangeRate>> GetLatestExchangeRatesAsync(CancellationToken ct = default)

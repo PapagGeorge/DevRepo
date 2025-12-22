@@ -1,4 +1,5 @@
 ﻿using WalletCore.Contrtacts.AdjustBalance;
+using WalletCore.Contrtacts.CommandContracts;
 using WalletCore.Contrtacts.DBModels;
 using WalletCore.Contrtacts.GetDailyRates;
 
@@ -30,6 +31,19 @@ namespace WalletCore.Application
                     Rate = r.Rate,
                     UpdatedAt = DateTime.UtcNow
                 }).ToList();
+        }
+
+        public static ExchangeRateDto ToDataServiceRequest(this ExchangeRate r)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            var now = DateTime.Now;
+
+            return new ExchangeRateDto(
+                Guid.NewGuid(),
+                today,
+                r.CurrencyCode,
+                r.Rate,
+                now);
         }
     }
 }

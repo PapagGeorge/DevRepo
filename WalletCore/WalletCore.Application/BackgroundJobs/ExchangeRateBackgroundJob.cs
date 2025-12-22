@@ -2,7 +2,8 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WalletCore.Application.Interfaces;
-using WalletCore.Application.Services;
+using WalletCore.Contrtacts.CommandContracts;
+using WalletCore.Contrtacts.DBModels;
 using WalletCore.Logging;
 
 namespace WalletCore.Application.BackgroundJobs
@@ -11,11 +12,16 @@ namespace WalletCore.Application.BackgroundJobs
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<ExchangeRateBackgroundJob> _logger;
+        private readonly ICommandPublisher _publisher;
 
-        public ExchangeRateBackgroundJob(IServiceProvider serviceProvider, ILogger<ExchangeRateBackgroundJob> logger)
+        public ExchangeRateBackgroundJob(
+            IServiceProvider serviceProvider,
+            ILogger<ExchangeRateBackgroundJob> logger,
+            ICommandPublisher publisher)
         {
             _serviceProvider = serviceProvider;
             _logger = logger;
+            _publisher = publisher;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -28,12 +34,10 @@ namespace WalletCore.Application.BackgroundJobs
                 {
                     using var scope = _serviceProvider.CreateScope();
 
-                    // Resolve raw service directly (no cache)
-                    var ecbService = scope.ServiceProvider.GetRequiredKeyedService<IEcbService>("raw");
-                    var mergeRepo = scope.ServiceProvider.GetRequiredService<IExchangeRateMergeRepository>();
-                    var cacheService = scope.ServiceProvider.GetRequiredService<ICacheService>();
+                    var ecbService = scope.ServiceProvider
+                        .GetRequiredKeyedService<IEcbService>("raw");
 
-                    await RunJobAsync(ecbService, mergeRepo, cacheService, stoppingToken);
+                    await RunJobAsync(ecbService, stoppingToken);
                 }
                 catch (Exception ex)
                 {
@@ -46,22 +50,19 @@ namespace WalletCore.Application.BackgroundJobs
 
         private async Task RunJobAsync(
             IEcbService ecbService,
-            IExchangeRateMergeRepository mergeRepo,
-            ICacheService cacheService,
             CancellationToken ct)
         {
             _logger.LogInfoExt("Fetching ECB daily rates...");
 
-            // Fetch fresh exchange rates from ECB (no caching)
             var exchangeRates = await ecbService.GetDailyRatesAsync(ct);
 
-            // Merge into DB
-            await mergeRepo.MergeRatesAsync(exchangeRates, ct);
+            var exchangeRatesDataRequest = new List<ExchangeRateDto>();
 
-            // Update cache for app usage
-            await cacheService.UpdateExchangeRatesAsync(exchangeRates, ct);
+            exchangeRatesDataRequest = exchangeRates.Select(r => r.ToDataServiceRequest()).ToList();
 
-            _logger.LogInfoExt("Exchange rates updated and cached.");
+            await _publisher.PublishMergeExchangeRatesAsync(exchangeRatesDataRequest);
+
+            _logger.LogInfoExt("Exchange rates published successfully.");
         }
     }
 }

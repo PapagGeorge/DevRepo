@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using WalletCore.Contrtacts.CommandContracts;
 using WalletCore.Contrtacts.DBModels;
 using WalletCore.DataService.Infrastructure.Interfaces;
+using WalletCore.DataService.Services.Infrastructure.Interfaces;
 
 namespace WalletCore.DataService.Infrastructure.Consumers
 {
@@ -11,6 +12,7 @@ namespace WalletCore.DataService.Infrastructure.Consumers
     {
         private readonly IExchangeRateMergeRepository _repository;
         private readonly ILogger<MergeExchangeRatesConsumer> _logger;
+        private readonly ICacheService _cacheService;
 
         public MergeExchangeRatesConsumer(
             IExchangeRateMergeRepository repository,
@@ -41,9 +43,16 @@ namespace WalletCore.DataService.Infrastructure.Consumers
             await _repository.MergeRatesAsync(
                 rates,
                 context.CancellationToken);
-
+            
             _logger.LogInformation(
                 "Exchange rates merged successfully");
+
+            await _cacheService.UpdateExchangeRatesAsync(
+                rates,
+                context.CancellationToken);
+
+            _logger.LogInformation(
+                "Redis cache updated successfully");
         }
     }
 }
