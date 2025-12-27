@@ -22,6 +22,7 @@ namespace WalletCore.Application
             // Register Core Services
             services.AddScoped<IEcbRateConverter, EcbRateConverter>();
             services.AddScoped<IWalletService, WalletService>();
+            services.AddScoped<WalletServiceLogger>();
 
             // Register the base service with a key for direct access
             services.AddKeyedScoped<IEcbService, EcbService>("raw");
