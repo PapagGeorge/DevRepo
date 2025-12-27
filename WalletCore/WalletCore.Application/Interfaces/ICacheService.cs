@@ -1,9 +1,0 @@
-﻿using WalletCore.Contrtacts.DBModels;
-
-namespace WalletCore.Application.Interfaces
-{
-    public interface ICacheService
-    {
-        Task<List<ExchangeRate>> GetLatestExchangeRatesAsync(CancellationToken ct = default);
-    }
-}

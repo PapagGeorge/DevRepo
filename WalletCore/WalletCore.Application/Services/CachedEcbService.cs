@@ -29,12 +29,14 @@ namespace WalletCore.Application.Services
                 if (!string.IsNullOrEmpty(json))
                 {
                     _logger.LogInfoExt("Cache hit: returning ECB rates from Redis.");
-                    return JsonSerializer.Deserialize<List<ExchangeRate>>(json);
+                    var cachedRates = JsonSerializer.Deserialize<List<ExchangeRate>>(json);
+                    _logger.LogInfoExt("ECB rates retrieved from cache", b => b.WithPayload(cachedRates));
+                    return cachedRates;
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogWarningExt("Failed to read from cache.", ex);
+                _logger.LogInfoExt("Cache miss: fetching ECB rates from API.");
             }
 
             var exchanggeRates = await _inner.GetDailyRatesAsync(); // Call API
@@ -45,7 +47,10 @@ namespace WalletCore.Application.Services
                 await _cache.SetStringAsync(CacheKey, serialized, new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2)
-                });
+                }, ct);
+
+                _logger.LogInfoExt("ECB rates cached successfully", b =>
+                    b.WithPayload(exchanggeRates));
             }
             catch (Exception ex)
             {

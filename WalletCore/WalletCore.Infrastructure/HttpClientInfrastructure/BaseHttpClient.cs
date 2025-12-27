@@ -27,12 +27,9 @@ namespace WalletCore.Infrastructure.HttpClientInfrastructure
         {
             try
             {
-                LogRequest(HttpMethod.Get, endpoint);
-
                 var response = await HttpClient.GetAsync(endpoint, ct);
                 var content = await response.Content.ReadAsStringAsync(ct);
 
-                LogResponse(response.StatusCode, endpoint, content);
                 response.EnsureSuccessStatusCode();
 
                 if (string.IsNullOrWhiteSpace(content))
@@ -40,9 +37,14 @@ namespace WalletCore.Infrastructure.HttpClientInfrastructure
 
                 return JsonSerializer.Deserialize<TResponse>(content, JsonOptions);
             }
-            catch (Exception ex)
+            catch (JsonException ex)
             {
-                Logger.LogError(ex, "Error in GET JSON request to {Endpoint}", endpoint);
+                Logger.LogError(ex, "Failed to deserialize JSON from {Endpoint}", endpoint);
+                throw;
+            }
+            catch (HttpRequestException ex)
+            {
+                Logger.LogError(ex, "HTTP GET request failed for {Endpoint}", endpoint);
                 throw;
             }
         }
@@ -55,13 +57,11 @@ namespace WalletCore.Infrastructure.HttpClientInfrastructure
             try
             {
                 var json = JsonSerializer.Serialize(request, JsonOptions);
-                LogRequest(HttpMethod.Post, endpoint, json);
 
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await HttpClient.PostAsync(endpoint, content, ct);
                 var responseContent = await response.Content.ReadAsStringAsync(ct);
 
-                LogResponse(response.StatusCode, endpoint, responseContent);
                 response.EnsureSuccessStatusCode();
 
                 if (string.IsNullOrWhiteSpace(responseContent))
@@ -69,9 +69,14 @@ namespace WalletCore.Infrastructure.HttpClientInfrastructure
 
                 return JsonSerializer.Deserialize<TResponse>(responseContent, JsonOptions);
             }
-            catch (Exception ex)
+            catch (JsonException ex)
             {
-                Logger.LogError(ex, "Error in POST request to {Endpoint}", endpoint);
+                Logger.LogError(ex, "Failed to deserialize JSON response from {Endpoint}", endpoint);
+                throw;
+            }
+            catch (HttpRequestException ex)
+            {
+                Logger.LogError(ex, "HTTP POST request failed for {Endpoint}", endpoint);
                 throw;
             }
         }
@@ -84,13 +89,11 @@ namespace WalletCore.Infrastructure.HttpClientInfrastructure
             try
             {
                 var json = JsonSerializer.Serialize(request, JsonOptions);
-                LogRequest(HttpMethod.Put, endpoint, json);
 
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await HttpClient.PutAsync(endpoint, content, ct);
                 var responseContent = await response.Content.ReadAsStringAsync(ct);
 
-                LogResponse(response.StatusCode, endpoint, responseContent);
                 response.EnsureSuccessStatusCode();
 
                 if (string.IsNullOrWhiteSpace(responseContent))
@@ -98,9 +101,14 @@ namespace WalletCore.Infrastructure.HttpClientInfrastructure
 
                 return JsonSerializer.Deserialize<TResponse>(responseContent, JsonOptions);
             }
-            catch (Exception ex)
+            catch (JsonException ex)
             {
-                Logger.LogError(ex, "Error in PUT request to {Endpoint}", endpoint);
+                Logger.LogError(ex, "Failed to deserialize JSON response from {Endpoint}", endpoint);
+                throw;
+            }
+            catch (HttpRequestException ex)
+            {
+                Logger.LogError(ex, "HTTP PUT request failed for {Endpoint}", endpoint);
                 throw;
             }
         }
@@ -111,21 +119,23 @@ namespace WalletCore.Infrastructure.HttpClientInfrastructure
         {
             try
             {
-                LogRequest(HttpMethod.Get, endpoint);
-
                 var response = await HttpClient.GetAsync(endpoint, ct);
                 var content = await response.Content.ReadAsStringAsync(ct);
 
-                LogResponse(response.StatusCode, endpoint, content);
                 response.EnsureSuccessStatusCode();
 
                 var serializer = new XmlSerializer(typeof(TResponse));
                 using var reader = new StringReader(content);
                 return (TResponse)serializer.Deserialize(reader)!;
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                Logger.LogError(ex, "Error in XML GET request to {Endpoint}", endpoint);
+                Logger.LogError(ex, "Failed to deserialize XML response from {Endpoint}", endpoint);
+                throw;
+            }
+            catch (HttpRequestException ex)
+            {
+                Logger.LogError(ex, "HTTP GET request failed for {Endpoint}", endpoint);
                 throw;
             }
         }
@@ -134,46 +144,15 @@ namespace WalletCore.Infrastructure.HttpClientInfrastructure
         {
             try
             {
-                LogRequest(HttpMethod.Delete, endpoint);
-
                 var response = await HttpClient.DeleteAsync(endpoint, ct);
-
-                LogResponse(response.StatusCode, endpoint);
                 response.EnsureSuccessStatusCode();
-
                 return true;
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
-                Logger.LogError(ex, "Error in DELETE request to {Endpoint}", endpoint);
+                Logger.LogError(ex, "HTTP DELETE request failed for {Endpoint}", endpoint);
                 throw;
             }
-        }
-
-        private void LogRequest(HttpMethod method, string endpoint, string? body = null)
-        {
-            var url = GetFullUrl(endpoint);
-            if (body != null)
-                Logger.LogInformation("HTTP {Method} {Url} - Body: {Body}", method, url, body);
-            else
-                Logger.LogInformation("HTTP {Method} {Url}", method, url);
-        }
-
-        private void LogResponse(System.Net.HttpStatusCode statusCode, string endpoint, string? body = null)
-        {
-            var url = GetFullUrl(endpoint);
-            Logger.LogInformation("HTTP Response {StatusCode} from {Url} - Body: {Body}",
-                statusCode, url, body ?? "<empty>");
-        }
-
-        private string GetFullUrl(string endpoint)
-        {
-            if (Uri.TryCreate(endpoint, UriKind.Absolute, out _))
-                return endpoint;
-
-            var baseAddress = HttpClient.BaseAddress?.ToString().TrimEnd('/') ?? "";
-            var relativePath = endpoint.TrimStart('/');
-            return $"{baseAddress}/{relativePath}";
         }
     }
 }

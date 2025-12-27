@@ -37,17 +37,27 @@ namespace WalletCore.Application.BackgroundJobs
                     var publisher = scope.ServiceProvider
                         .GetRequiredService<ICommandPublisher>();
 
+                    _logger.LogInfoExt("Fetching daily exchange rates from ECB service");
+
                     var rates = await ecbService.GetDailyRatesAsync(stoppingToken);
 
+                    _logger.LogInfoExt("Daily exchange rates fetched", b =>
+                        b.WithPayload(rates));
+
                     var exchangeRatesDataRequest = new List<ExchangeRateDto>();
+
+                    _logger.LogInfoExt("Publishing exchange rates to data service", b =>
+                        b.WithPayload(exchangeRatesDataRequest));
 
                     exchangeRatesDataRequest = rates.Select(r => r.ToDataServiceRequest()).ToList();
 
                     await publisher.PublishMergeExchangeRatesAsync(exchangeRatesDataRequest);
+
+                    _logger.LogInfoExt("Exchange rates successfully published");
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error running exchange rate job");
+                    _logger.LogErrorExt("Error running exchange rate job", ex);
                 }
 
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
