@@ -16,10 +16,12 @@ namespace WalletCore.DataService.Infrastructure.Consumers
 
         public MergeExchangeRatesConsumer(
             IExchangeRateMergeRepository repository,
-            ILogger<MergeExchangeRatesConsumer> logger)
+            ILogger<MergeExchangeRatesConsumer> logger,
+            ICacheService cacheService)
         {
             _repository = repository;
             _logger = logger;
+            _cacheService = cacheService;
         }
 
         public async Task Consume(

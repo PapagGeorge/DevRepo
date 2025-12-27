@@ -39,7 +39,7 @@ namespace WalletCore.Application.Services
                 {
                     WalletId = newWallet.Id,
                     IsSuccessful = true,
-                    Message = "Wallet created successfully."
+                    Message = "Wallet created successfully"
                 };
             }
             catch (Exception ex)
@@ -81,7 +81,7 @@ namespace WalletCore.Application.Services
             return new GetBalanceResponse
             {
                 WalletId = wallet.Id,
-                Balance = conversion.ConvertedAmount,
+                Balance = Math.Round(conversion.ConvertedAmount, 2, MidpointRounding.AwayFromZero),
                 Currency = targetCurrency
             };
         }
@@ -115,9 +115,9 @@ namespace WalletCore.Application.Services
             return new AdjustBalanceResponse
             {
                 WalletId = result.WalletId,
-                OldBalance = oldBalance,
-                NewBalance = result.NewBalance,
-                AppliedAmount = conversion.ConvertedAmount,
+                OldBalance = Math.Round(oldBalance, 2, MidpointRounding.AwayFromZero),
+                NewBalance = Math.Round(result.NewBalance, 2, MidpointRounding.AwayFromZero),
+                AppliedAmount = Math.Round(conversion.ConvertedAmount, 2, MidpointRounding.AwayFromZero),
                 WalletCurrency = result.WalletCurrency,
                 IsSuccessful = true,
                 AdjustmentStrategy = request.AdjustmentStrategy,

@@ -7,6 +7,8 @@ using WalletCore.DataService.Infrastructure.Configuration;
 using WalletCore.DataService.Infrastructure.Consumers;
 using WalletCore.DataService.Infrastructure.Interfaces;
 using WalletCore.DataService.Repositories.Repositorues;
+using WalletCore.DataService.Services.Infrastructure;
+using WalletCore.DataService.Services.Infrastructure.Interfaces;
 
 namespace WalletCore.DataService.Infrastructure
 {
@@ -19,6 +21,7 @@ namespace WalletCore.DataService.Infrastructure
             services.AddDbContexts();
             services.AddScoped<IExchangeRateMergeRepository, ExchangeRateMergeRepository>();
             services.AddScoped<IWalletRepository, WalletRepository>();
+            services.AddScoped<ICacheService, CacheService>();
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<CreateWalletConsumer>();
