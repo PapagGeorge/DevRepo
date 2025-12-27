@@ -14,11 +14,11 @@
     <PackageReference Include="Polly" Version="8.6.5" />
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageReference Include="WalletCore.Contracts" Version="2.0.0" />
+    <PackageReference Include="WalletCore.Logging" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WalletCore.Application\WalletCore.Application.csproj" />
-    <ProjectReference Include="..\WalletCore.Logging\WalletCore.Logging.csproj" />
   </ItemGroup>
 
 </Project>

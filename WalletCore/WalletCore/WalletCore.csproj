@@ -11,12 +11,12 @@
     <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
     <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="10.0.0" />
+    <PackageReference Include="WalletCore.Logging" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WalletCore.Application\WalletCore.Application.csproj" />
     <ProjectReference Include="..\WalletCore.Infrastructure\WalletCore.Infrastructure.csproj" />
-    <ProjectReference Include="..\WalletCore.Logging\WalletCore.Logging.csproj" />
   </ItemGroup>
 
 </Project>
