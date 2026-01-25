@@ -172,9 +172,6 @@ C:\DevRepo
 │   │   ├── ResponseModels/
 │   │   └── Exceptions/
 │   │
-│   ├── WalletCore.Logging/             # Logging Library
-│   │   └── LoggerExtensions.cs
-│   │
 │   ├── docker-compose.yaml             # Infrastructure services
 │   └── WalletCore.sln
 │
@@ -205,8 +202,11 @@ C:\DevRepo
 │   │
 │   └── WalletCore.DataService.sln
 │
-└── WalletCore.Logging/                 # Standalone Logging Package
+└── WalletCore.Logging/                 # Shared Logging NuGet Package (v1.0.0)
     └── WalletCore.Logging/
+        ├── GlobalLog.cs
+        ├── GlobalLogBuilder.cs
+        ├── HttpAccessor.cs
         └── LoggerExtensions.cs
 ```
 
