@@ -1,7 +1,6 @@
 ﻿using MassTransit;
 using WalletCore.Application.Interfaces;
 using WalletCore.Contrtacts.CommandContracts;
-using WalletCore.Contrtacts.DBModels;
 
 namespace WalletCore.Infrastructure
 {
@@ -12,20 +11,6 @@ namespace WalletCore.Infrastructure
         public CommandPublisher(IPublishEndpoint publishEndpoint)
         {
             _publishEndpoint = publishEndpoint;
-        }
-
-        public async Task PublishCreateWalletAsync(Wallet wallet)
-        {
-            var command = new CreateWalletCommand(wallet);
-
-            try
-            {
-                await _publishEndpoint.Publish(command);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
         }
 
         public async Task PublishMergeExchangeRatesAsync(IReadOnlyCollection<ExchangeRateDto> rates)

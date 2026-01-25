@@ -24,7 +24,6 @@ namespace WalletCore.DataService.Infrastructure
             services.AddScoped<ICacheService, CacheService>();
             services.AddMassTransit(x =>
             {
-                x.AddConsumer<CreateWalletConsumer>();
                 x.AddConsumer<MergeExchangeRatesConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>

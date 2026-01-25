@@ -15,20 +15,17 @@ namespace WalletCore.Application.Services
     {
         private readonly IWalletBalanceStrategyFactory _strategyFactory;
         private readonly IEcbRateConverter _rateConverter;
-        private readonly ICommandPublisher _publisher;
         private readonly IWalletDataServiceHttpClient _walletDataServiceHttpClient;
         private readonly WalletServiceLogger _log;
 
         public WalletService(
             IWalletBalanceStrategyFactory strategyFactory,
             IEcbRateConverter rateConverter,
-            ICommandPublisher publisher,
             IWalletDataServiceHttpClient walletDataServiceHttpClient,
             WalletServiceLogger log)
         {
             _strategyFactory = strategyFactory;
             _rateConverter = rateConverter;
-            _publisher = publisher;
             _walletDataServiceHttpClient = walletDataServiceHttpClient;
             _log = log;
         }
@@ -36,23 +33,17 @@ namespace WalletCore.Application.Services
         public async Task<CreateWalletResponse> CreateWalletAsync(CreateWalletRequest request)
         {
             _log.LogCreatingWallet(request);
-            var newWallet = new Wallet { Id = Guid.NewGuid(), Balance = 0, Currency = request.Currency };
             try
             {
-                await _publisher.PublishCreateWalletAsync(newWallet);
+                var response = await _walletDataServiceHttpClient.CreateWalletAsync(request);
 
-                _log.LogWalletCreated(newWallet);
+                _log.LogWalletCreated(new Wallet { Id = response.WalletId, Balance = 0, Currency = request.Currency });
 
-                return new CreateWalletResponse
-                {
-                    WalletId = newWallet.Id,
-                    IsSuccessful = true,
-                    Message = "Wallet created successfully"
-                };
+                return response;
             }
             catch (Exception ex)
             {
-                _log.LogWalletCreationFailed(newWallet, ex);
+                _log.LogWalletCreationFailed(new Wallet { Currency = request.Currency }, ex);
                 throw;
             }
         }
