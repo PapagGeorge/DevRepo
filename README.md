@@ -111,6 +111,40 @@ WalletCore is a distributed wallet management system that enables:
 | **Repository** | `IWalletRepository`, `IExchangeRateMergeRepository` | Data access abstraction |
 | **Pub/Sub** | MassTransit with RabbitMQ | Asynchronous exchange rate updates |
 
+### Layered Architecture
+
+Both services follow **Clean Architecture** principles with clear separation of concerns:
+
+**WalletCore API:**
+```
+┌─────────────────────────────────────┐
+│  WalletCore (Presentation)          │  Controllers, Middleware
+├─────────────────────────────────────┤
+│  WalletCore.Application             │  Services, Strategies, Background Jobs
+├─────────────────────────────────────┤
+│  WalletCore.Infrastructure          │  HTTP Clients, Message Publishers
+├─────────────────────────────────────┤
+│  WalletCore.Contracts (Shared)      │  DTOs, Commands, Domain Models
+└─────────────────────────────────────┘
+```
+
+**WalletCore.DataService:**
+```
+┌─────────────────────────────────────┐
+│  DataService (Presentation)         │  Minimal API Endpoints
+├─────────────────────────────────────┤
+│  DataService.Application            │  Services (WalletService, ExchangeRateService)
+│                                     │  Repository Interfaces (Contracts)
+├─────────────────────────────────────┤
+│  DataService.Infrastructure         │  EF Core, Repositories, Consumers, Cache
+└─────────────────────────────────────┘
+```
+
+**Key Principles:**
+- **Dependency Inversion**: Infrastructure depends on Application, not vice versa
+- **Interface Segregation**: Repository interfaces defined in Application layer
+- **Single Responsibility**: Each layer has a distinct purpose
+
 ---
 
 ## Technology Stack
@@ -222,6 +256,29 @@ C:\DevRepo
         ├── GlobalLogBuilder.cs
         ├── HttpAccessor.cs
         └── LoggerExtensions.cs
+```
+
+### DataService Application Layer
+
+The DataService follows clean architecture with an Application layer containing business logic services:
+
+| Service | Interface | Responsibility |
+|---------|-----------|----------------|
+| **WalletService** | `IWalletService` | Wallet CRUD operations, balance adjustments |
+| **ExchangeRateService** | `IExchangeRateService` | Merge exchange rates to DB and cache |
+
+**Repository Interfaces** (defined in Application, implemented in Infrastructure):
+
+| Interface | Implementation | Purpose |
+|-----------|---------------|---------|
+| `IWalletRepository` | `WalletRepository` | Wallet persistence (EF Core) |
+| `IExchangeRateMergeRepository` | `ExchangeRateMergeRepository` | Bulk rate upsert (SQL stored procedure) |
+| `ICacheService` | `CacheService` | Redis cache for exchange rates |
+
+**Dependency Flow:**
+```
+Program.cs → IWalletService → IWalletRepository → WalletDbContext → SQL Server
+                           ↘ ICacheService → Redis
 ```
 
 ---
