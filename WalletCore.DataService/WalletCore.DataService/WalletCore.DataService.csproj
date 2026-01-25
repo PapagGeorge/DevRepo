@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WalletCore.DataService.Application\WalletCore.DataService.Application.csproj" />
     <ProjectReference Include="..\WalletCore.DataService.Infrastructure\WalletCore.DataService.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

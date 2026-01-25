@@ -1,14 +1,12 @@
-﻿using MassTransit;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using WalletCore.DataService.Application.Interfaces.Repositories;
 using WalletCore.DataService.Infrastructure.Configuration;
 using WalletCore.DataService.Infrastructure.Consumers;
-using WalletCore.DataService.Infrastructure.Interfaces;
 using WalletCore.DataService.Repositories.Repositorues;
-using WalletCore.DataService.Services.Infrastructure;
-using WalletCore.DataService.Services.Infrastructure.Interfaces;
 
 namespace WalletCore.DataService.Infrastructure
 {

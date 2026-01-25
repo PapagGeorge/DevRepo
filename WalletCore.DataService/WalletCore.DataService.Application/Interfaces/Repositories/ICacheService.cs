@@ -1,6 +1,6 @@
-﻿using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contrtacts.DBModels;
 
-namespace WalletCore.DataService.Services.Infrastructure.Interfaces
+namespace WalletCore.DataService.Application.Interfaces.Repositories
 {
     public interface ICacheService
     {

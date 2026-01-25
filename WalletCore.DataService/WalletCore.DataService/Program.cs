@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Serilog;
 using WalletCore.Contrtacts.AdjustBalance;
 using WalletCore.Contrtacts.CreateWallet;
-using WalletCore.Contrtacts.DBModels;
+using WalletCore.DataService.Application;
+using WalletCore.DataService.Application.Interfaces;
 using WalletCore.DataService.Infrastructure;
 using WalletCore.DataService.Infrastructure.Configuration;
-using WalletCore.DataService.Infrastructure.Interfaces;
 
 namespace WalletCore.DataService
 {
@@ -61,6 +61,11 @@ namespace WalletCore.DataService
                 // ----------------------------
                 builder.Services.AddInfrastructure(builder.Configuration);
 
+                // ----------------------------
+                // Application (Services)
+                // ----------------------------
+                builder.Services.AddApplication();
+
                 var app = builder.Build();
 
                 // ----------------------------
@@ -74,9 +79,9 @@ namespace WalletCore.DataService
                 // ----------------------------
                 app.MapGet("/wallets/{id:guid}", async (
                     Guid id,
-                    IWalletRepository walletRepository) =>
+                    IWalletService walletService) =>
                 {
-                    var wallet = await walletRepository.GetByIdAsync(id);
+                    var wallet = await walletService.GetByIdAsync(id);
 
                     return wallet is null
                         ? Results.NotFound()
@@ -89,39 +94,21 @@ namespace WalletCore.DataService
                 });
 
                 app.MapPost("/wallet", async (
-                CreateWalletRequest request,
-                IWalletRepository walletRepository) =>
+                    CreateWalletRequest request,
+                    IWalletService walletService) =>
                 {
-                    var wallet = new Wallet
-                    {
-                        Id = Guid.NewGuid(),
-                        Currency = request.Currency,
-                        Balance = 0m
-                    };
+                    var response = await walletService.CreateWalletAsync(request);
 
-                    await walletRepository.AddAsync(wallet);
-
-                    return Results.Created($"/wallet/{wallet.Id}", new CreateWalletResponse
-                    {
-                        WalletId = wallet.Id,
-                        IsSuccessful = true,
-                        Message = $"Wallet with {wallet.Id} created syccessfully"
-                    });
+                    return Results.Created($"/wallet/{response.WalletId}", response);
                 });
 
                 app.MapPost("/wallet/balance", async (
-                AdjustBalanceRequestDto request,
-                IWalletRepository walletRepository) =>
+                    AdjustBalanceRequestDto request,
+                    IWalletService walletService) =>
                 {
-                    await walletRepository.UpdateBalanceAsync(request.Wallet, request.NewBalance);
+                    var response = await walletService.AdjustBalanceAsync(request);
 
-                    return Results.Created($"/wallet/balance", new AdjustBalanceResponse
-                    {
-                        WalletId = request.Wallet.Id,
-                        IsSuccessful = true,
-                        NewBalance = request.NewBalance,
-                        WalletCurrency = request.Wallet.Currency
-                    });
+                    return Results.Created($"/wallet/balance", response);
                 });
 
                 Log.Information("WalletCore.DataService started successfully");

@@ -1,27 +1,23 @@
-﻿using MassTransit;
+using MassTransit;
 using Microsoft.Extensions.Logging;
 using WalletCore.Contrtacts.CommandContracts;
 using WalletCore.Contrtacts.DBModels;
-using WalletCore.DataService.Infrastructure.Interfaces;
-using WalletCore.DataService.Services.Infrastructure.Interfaces;
+using WalletCore.DataService.Application.Interfaces;
 
 namespace WalletCore.DataService.Infrastructure.Consumers
 {
     public class MergeExchangeRatesConsumer
         : IConsumer<MergeExchangeRatesCommand>
     {
-        private readonly IExchangeRateMergeRepository _repository;
+        private readonly IExchangeRateService _exchangeRateService;
         private readonly ILogger<MergeExchangeRatesConsumer> _logger;
-        private readonly ICacheService _cacheService;
 
         public MergeExchangeRatesConsumer(
-            IExchangeRateMergeRepository repository,
-            ILogger<MergeExchangeRatesConsumer> logger,
-            ICacheService cacheService)
+            IExchangeRateService exchangeRateService,
+            ILogger<MergeExchangeRatesConsumer> logger)
         {
-            _repository = repository;
+            _exchangeRateService = exchangeRateService;
             _logger = logger;
-            _cacheService = cacheService;
         }
 
         public async Task Consume(
@@ -42,19 +38,12 @@ namespace WalletCore.DataService.Infrastructure.Consumers
                 UpdatedAt = r.UpdatedAt
             });
 
-            await _repository.MergeRatesAsync(
-                rates,
-                context.CancellationToken);
-            
-            _logger.LogInformation(
-                "Exchange rates merged successfully");
-
-            await _cacheService.UpdateExchangeRatesAsync(
+            await _exchangeRateService.MergeRatesAsync(
                 rates,
                 context.CancellationToken);
 
             _logger.LogInformation(
-                "Redis cache updated successfully");
+                "Exchange rates processing completed");
         }
     }
 }

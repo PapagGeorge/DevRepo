@@ -191,14 +191,28 @@ C:\DevRepo
 │   │   ├── appsettings.json
 │   │   └── Program.cs
 │   │
-│   ├── WalletCore.DataService.Infrastructure/
+│   ├── WalletCore.DataService.Application/  # Business Logic Layer
+│   │   ├── Interfaces/
+│   │   │   ├── IWalletService.cs
+│   │   │   ├── IExchangeRateService.cs
+│   │   │   └── Repositories/           # Repository contracts
+│   │   │       ├── IWalletRepository.cs
+│   │   │       ├── IExchangeRateMergeRepository.cs
+│   │   │       └── ICacheService.cs
+│   │   ├── Services/
+│   │   │   ├── WalletService.cs
+│   │   │   └── ExchangeRateService.cs
+│   │   └── ApplicationModule.cs
+│   │
+│   ├── WalletCore.DataService.Infrastructure/  # Data Access Layer
 │   │   ├── WalletDbContext.cs          # EF Core context
 │   │   ├── Repositories/
 │   │   │   ├── WalletRepository.cs
 │   │   │   └── ExchangeRateMergeRepository.cs
 │   │   ├── Consumers/
 │   │   │   └── MergeExchangeRatesConsumer.cs
-│   │   └── CacheService.cs
+│   │   ├── CacheService.cs
+│   │   └── InfrastructureModule.cs
 │   │
 │   └── WalletCore.DataService.sln
 │

@@ -22,7 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WalletCore.DataService.Logging\WalletCore.DataService.Logging.csproj" />
+    <PackageReference Include="WalletCore.Logging" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WalletCore.DataService.Application\WalletCore.DataService.Application.csproj" />
   </ItemGroup>
 
 </Project>

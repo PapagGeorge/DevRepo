@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 using WalletCore.Contrtacts.DBModels;
-using WalletCore.DataService.Services.Infrastructure.Interfaces;
+using WalletCore.DataService.Application.Interfaces.Repositories;
 
-namespace WalletCore.DataService.Services.Infrastructure
+namespace WalletCore.DataService.Infrastructure
 {
     public class CacheService : ICacheService
     {
