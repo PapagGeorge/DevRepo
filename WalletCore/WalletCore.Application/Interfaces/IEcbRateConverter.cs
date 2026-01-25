@@ -1,4 +1,4 @@
-﻿using WalletCore.Contrtacts.EcbRateConverter;
+﻿using WalletCore.Contracts.EcbRateConverter;
 
 namespace WalletCore.Application.Interfaces
 {

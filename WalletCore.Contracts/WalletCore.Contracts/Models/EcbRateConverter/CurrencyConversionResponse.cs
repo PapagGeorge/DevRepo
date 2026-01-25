@@ -1,4 +1,4 @@
-﻿namespace WalletCore.Contrtacts.EcbRateConverter
+﻿namespace WalletCore.Contracts.EcbRateConverter
 {
     public class CurrencyConversionResponse
     {

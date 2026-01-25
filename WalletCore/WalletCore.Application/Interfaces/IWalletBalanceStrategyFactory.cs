@@ -1,4 +1,4 @@
-﻿using WalletCore.Contrtacts.AdjustBalance;
+﻿using WalletCore.Contracts.AdjustBalance;
 
 namespace WalletCore.Application.Interfaces
 {

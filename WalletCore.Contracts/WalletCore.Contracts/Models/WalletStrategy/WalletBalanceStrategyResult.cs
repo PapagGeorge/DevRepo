@@ -1,4 +1,4 @@
-﻿namespace WalletCore.Contrtacts.WalletStrategy
+﻿namespace WalletCore.Contracts.WalletStrategy
 {
     public class WalletBalanceStrategyResult
     {

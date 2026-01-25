@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WalletCore.Application.Interfaces;
-using WalletCore.Contrtacts.CommandContracts;
-using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contracts.CommandContracts;
+using WalletCore.Contracts.DBModels;
 using WalletCore.Logging;
 
 namespace WalletCore.Application.BackgroundJobs

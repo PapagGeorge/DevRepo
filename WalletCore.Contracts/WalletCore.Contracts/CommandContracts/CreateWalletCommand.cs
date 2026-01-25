@@ -1,7 +1,7 @@
 ﻿using System;
-using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contracts.DBModels;
 
-namespace WalletCore.Contrtacts.CommandContracts
+namespace WalletCore.Contracts.CommandContracts
 {
     /// <summary>
     /// Command to create a new wallet

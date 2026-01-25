@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 using WalletCore.Application.Interfaces;
-using WalletCore.Contrtacts.CommandContracts;
+using WalletCore.Contracts.CommandContracts;
 
 namespace WalletCore.Infrastructure
 {

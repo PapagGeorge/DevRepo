@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
-using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contracts.DBModels;
 using WalletCore.DataService.Application.Interfaces.Repositories;
 
 namespace WalletCore.DataService.Infrastructure

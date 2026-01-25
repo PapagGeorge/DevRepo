@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WalletCore.Application.Interfaces;
-using WalletCore.Contrtacts.AdjustBalance;
-using WalletCore.Contrtacts.CreateWallet;
-using WalletCore.Contrtacts.GetBalance;
-using WalletCore.Contrtacts.Models;
+using WalletCore.Contracts.AdjustBalance;
+using WalletCore.Contracts.CreateWallet;
+using WalletCore.Contracts.GetBalance;
+using WalletCore.Contracts.Models;
 using WalletCore.Logging;
 
 namespace WalletCore.Controllers

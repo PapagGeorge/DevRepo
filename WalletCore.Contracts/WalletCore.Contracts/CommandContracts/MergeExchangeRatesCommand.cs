@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WalletCore.Contrtacts.CommandContracts
+namespace WalletCore.Contracts.CommandContracts
 {
     /// <summary>
     /// Command to merge a list of exchange rates into the database

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-namespace WalletCore.Contrtacts.AdjustBalance
+namespace WalletCore.Contracts.AdjustBalance
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum WalletStrategyOperation

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WalletCore.Contrtacts.CreateWallet
+namespace WalletCore.Contracts.CreateWallet
 {
     public class CreateWalletResponse
     {

@@ -1,4 +1,4 @@
-﻿namespace WalletCore.Contrtacts.Models
+﻿namespace WalletCore.Contracts.Models
 {
     public class ResponseMessage
     {

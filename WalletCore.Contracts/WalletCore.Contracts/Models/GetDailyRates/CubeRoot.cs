@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace WalletCore.Contrtacts.GetDailyRates
+namespace WalletCore.Contracts.GetDailyRates
 {
     public class CubeRoot
     {

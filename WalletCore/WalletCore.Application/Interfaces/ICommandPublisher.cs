@@ -1,4 +1,4 @@
-﻿using WalletCore.Contrtacts.CommandContracts;
+﻿using WalletCore.Contracts.CommandContracts;
 
 namespace WalletCore.Application.Interfaces
 {

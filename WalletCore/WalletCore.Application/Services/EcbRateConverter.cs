@@ -1,6 +1,6 @@
 ﻿using WalletCore.Application.Interfaces;
-using WalletCore.Contrtacts.DBModels;
-using WalletCore.Contrtacts.EcbRateConverter;
+using WalletCore.Contracts.DBModels;
+using WalletCore.Contracts.EcbRateConverter;
 
 namespace WalletCore.Application.Services
 {

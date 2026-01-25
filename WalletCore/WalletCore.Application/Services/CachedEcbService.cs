@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using WalletCore.Application.Interfaces;
-using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contracts.DBModels;
 using WalletCore.Logging;
 
 namespace WalletCore.Application.Services

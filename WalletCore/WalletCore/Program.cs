@@ -45,7 +45,7 @@ namespace WalletCore
                 builder.Services.AddSingleton<ExceptionHandler>(sp =>
                 {
                     var logger = sp.GetRequiredService<ILogger<ExceptionHandler>>();
-                    return new ExceptionHandler(logger, typeof(WalletCore.Domain.Exceptions.WalletException.BusinessException));
+                    return new ExceptionHandler(logger, typeof(WalletCore.Contracts.Exceptions.WalletException.BusinessException));
                 });
 
                 // Configure options

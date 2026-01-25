@@ -1,5 +1,5 @@
 ﻿using WalletCore.Application.Interfaces;
-using WalletCore.Contrtacts.WalletStrategy;
+using WalletCore.Contracts.WalletStrategy;
 
 namespace WalletCore.Application.Strategies
 {

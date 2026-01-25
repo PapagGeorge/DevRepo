@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging;
-using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contracts.DBModels;
 using WalletCore.DataService.Application.Interfaces;
 using WalletCore.DataService.Application.Interfaces.Repositories;
 using WalletCore.Logging;

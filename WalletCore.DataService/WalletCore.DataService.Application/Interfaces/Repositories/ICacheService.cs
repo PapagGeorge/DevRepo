@@ -1,4 +1,4 @@
-using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contracts.DBModels;
 
 namespace WalletCore.DataService.Application.Interfaces.Repositories
 {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contracts.DBModels;
 
 namespace WalletCore.DataService.Infrastructure
 {

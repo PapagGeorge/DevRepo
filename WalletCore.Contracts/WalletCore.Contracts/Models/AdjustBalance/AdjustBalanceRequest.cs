@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WalletCore.Contrtacts.AdjustBalance
+namespace WalletCore.Contracts.AdjustBalance
 {
     public class AdjustBalanceRequest
     {

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Serilog;
-using WalletCore.Contrtacts.AdjustBalance;
-using WalletCore.Contrtacts.CreateWallet;
+using WalletCore.Contracts.AdjustBalance;
+using WalletCore.Contracts.CreateWallet;
 using WalletCore.DataService.Application;
 using WalletCore.DataService.Application.Interfaces;
 using WalletCore.DataService.Infrastructure;

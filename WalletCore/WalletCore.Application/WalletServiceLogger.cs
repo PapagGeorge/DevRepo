@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using WalletCore.Application.Services;
-using WalletCore.Contrtacts.AdjustBalance;
-using WalletCore.Contrtacts.CreateWallet;
-using WalletCore.Contrtacts.DBModels;
-using WalletCore.Contrtacts.GetBalance;
+using WalletCore.Contracts.AdjustBalance;
+using WalletCore.Contracts.CreateWallet;
+using WalletCore.Contracts.DBModels;
+using WalletCore.Contracts.GetBalance;
 using WalletCore.Logging;
 
 namespace WalletCore.Application

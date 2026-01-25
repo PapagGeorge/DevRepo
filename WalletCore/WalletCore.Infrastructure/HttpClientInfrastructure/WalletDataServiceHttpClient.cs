@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Options;
 using WalletCore.Application.Configuration;
 using WalletCore.Application.Interfaces;
-using WalletCore.Contrtacts.AdjustBalance;
-using WalletCore.Contrtacts.CreateWallet;
-using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contracts.AdjustBalance;
+using WalletCore.Contracts.CreateWallet;
+using WalletCore.Contracts.DBModels;
 
 namespace WalletCore.Infrastructure.HttpClientInfrastructure
 {

@@ -1,5 +1,5 @@
 ﻿using System;
-using WalletCore.Contrtacts.AdjustBalance;
+using WalletCore.Contracts.AdjustBalance;
 
 namespace WalletCore.Contracts.Exceptions
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WalletCore.Contrtacts.GetBalance
+namespace WalletCore.Contracts.GetBalance
 {
     public class GetBalanceResponse
     {

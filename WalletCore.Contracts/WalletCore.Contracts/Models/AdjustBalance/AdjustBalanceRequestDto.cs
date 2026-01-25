@@ -1,6 +1,6 @@
-﻿using WalletCore.Contrtacts.DBModels;
+﻿using WalletCore.Contracts.DBModels;
 
-namespace WalletCore.Contrtacts.AdjustBalance
+namespace WalletCore.Contracts.AdjustBalance
 {
     public class AdjustBalanceRequestDto
     {

@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace WalletCore.Contrtacts.GetDailyRates
+namespace WalletCore.Contracts.GetDailyRates
 {
     [XmlRoot(ElementName = "Envelope", Namespace = "http://www.gesmes.org/xml/2002-08-01")]
     public class GesmesEnvelope

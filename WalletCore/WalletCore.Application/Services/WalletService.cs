@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using WalletCore.Application.Interfaces;
-using WalletCore.Contrtacts.AdjustBalance;
-using WalletCore.Contrtacts.CreateWallet;
-using WalletCore.Contrtacts.DBModels;
-using WalletCore.Contrtacts.EcbRateConverter;
-using WalletCore.Contrtacts.GetBalance;
-using WalletCore.Contrtacts.WalletStrategy;
-using WalletCore.Domain.Exceptions;
+using WalletCore.Contracts.AdjustBalance;
+using WalletCore.Contracts.CreateWallet;
+using WalletCore.Contracts.DBModels;
+using WalletCore.Contracts.EcbRateConverter;
+using WalletCore.Contracts.GetBalance;
+using WalletCore.Contracts.WalletStrategy;
+using WalletCore.Contracts.Exceptions;
 using WalletCore.Logging;
 
 namespace WalletCore.Application.Services

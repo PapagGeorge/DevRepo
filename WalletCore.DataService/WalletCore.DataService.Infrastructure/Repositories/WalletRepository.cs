@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using WalletCore.Logging;
 using WalletCore.DataService.Application.Interfaces.Repositories;
 using WalletCore.DataService.Infrastructure;
-using WalletCore.Contrtacts.DBModels;
+using WalletCore.Contracts.DBModels;
 
 namespace WalletCore.DataService.Repositories.Repositorues
 

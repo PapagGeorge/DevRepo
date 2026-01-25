@@ -1,7 +1,7 @@
-﻿using WalletCore.Contrtacts.AdjustBalance;
-using WalletCore.Contrtacts.CommandContracts;
-using WalletCore.Contrtacts.DBModels;
-using WalletCore.Contrtacts.GetDailyRates;
+﻿using WalletCore.Contracts.AdjustBalance;
+using WalletCore.Contracts.CommandContracts;
+using WalletCore.Contracts.DBModels;
+using WalletCore.Contracts.GetDailyRates;
 
 namespace WalletCore.Application
 {

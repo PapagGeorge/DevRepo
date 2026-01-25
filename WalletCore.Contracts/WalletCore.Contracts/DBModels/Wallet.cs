@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WalletCore.Contrtacts.DBModels
+namespace WalletCore.Contracts.DBModels
 {
     public class Wallet
     {
