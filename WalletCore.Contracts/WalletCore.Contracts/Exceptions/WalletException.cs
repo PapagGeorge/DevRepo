@@ -1,7 +1,7 @@
 ﻿using System;
 using WalletCore.Contrtacts.AdjustBalance;
 
-namespace WalletCore.Domain.Exceptions
+namespace WalletCore.Contracts.Exceptions
 {
     public static class WalletException
     {
