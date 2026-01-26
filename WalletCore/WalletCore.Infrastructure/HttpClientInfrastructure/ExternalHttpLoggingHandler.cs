@@ -25,6 +25,12 @@ namespace WalletCore.Infrastructure
         {
             var transactionId = _httpContextAccessor.HttpContext?.Items["TransactionId"]?.ToString();
 
+            // Pass TransactionId to downstream services
+            if (!string.IsNullOrEmpty(transactionId))
+            {
+                request.Headers.TryAddWithoutValidation("X-Transaction-Id", transactionId);
+            }
+
             // Prepare common info
             var serviceName = Assembly.GetEntryAssembly()?.GetName().Name ?? "UnknownService";
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");

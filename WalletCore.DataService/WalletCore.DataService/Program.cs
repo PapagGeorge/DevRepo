@@ -7,6 +7,7 @@ using WalletCore.DataService.Application;
 using WalletCore.DataService.Application.Interfaces;
 using WalletCore.DataService.Infrastructure;
 using WalletCore.DataService.Infrastructure.Configuration;
+using WalletCore.Logging;
 
 namespace WalletCore.DataService
 {
@@ -57,6 +58,11 @@ namespace WalletCore.DataService
                     builder.Configuration.GetSection("Redis"));
 
                 // ----------------------------
+                // HttpContext Accessor (for logging)
+                // ----------------------------
+                builder.Services.AddHttpContextAccessor();
+
+                // ----------------------------
                 // Infrastructure (EF + MassTransit + Repositories)
                 // ----------------------------
                 builder.Services.AddInfrastructure(builder.Configuration);
@@ -69,8 +75,15 @@ namespace WalletCore.DataService
                 var app = builder.Build();
 
                 // ----------------------------
+                // Configure HttpAccessor for logging
+                // ----------------------------
+                var httpContextAccessor = app.Services.GetRequiredService<IHttpContextAccessor>();
+                HttpAccessor.Configure(httpContextAccessor);
+
+                // ----------------------------
                 // Middleware
                 // ----------------------------
+                app.UseMiddleware<TransactionIdMiddleware>();
                 app.UseSerilogRequestLogging();
                 app.UseCors("AllowAll");
 

@@ -1,4 +1,6 @@
-﻿namespace WalletCore.Logging
+﻿using System.Text.Json;
+
+namespace WalletCore.Logging
 {
     public class GlobalLogBuilder
     {
@@ -6,7 +8,7 @@
         private string _requestUuid;
         private string _direction;
         private string _service;
-        private object? _payload;
+        private string? _payload;
         private DateTime _timestamp = DateTime.Now;
         private string _level;
         private string _endpoint;
@@ -40,7 +42,7 @@
 
         public GlobalLogBuilder WithPayload(object? payload)
         {
-            _payload = payload;
+            _payload = payload is null ? null : JsonSerializer.Serialize(payload);
             return this;
         }
 

@@ -2,6 +2,7 @@ using Serilog;
 using WalletCore.Application;
 using WalletCore.Application.Configuration;
 using WalletCore.Infrastructure;
+using WalletCore.Logging;
 
 namespace WalletCore
 {
@@ -60,6 +61,11 @@ namespace WalletCore
                 builder.Services.AddApplicationServices(builder.Configuration);
 
                 var app = builder.Build();
+
+                // Configure HttpAccessor for logging to access HttpContext
+                var httpContextAccessor = app.Services.GetRequiredService<IHttpContextAccessor>();
+                HttpAccessor.Configure(httpContextAccessor);
+
                 app.UseMiddleware<TransactionIdMiddleware>();
 
                 // Add Serilog request logging middleware

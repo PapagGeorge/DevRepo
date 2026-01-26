@@ -6,7 +6,7 @@
         public string RequestUUID { get; init; }
         public string Direction { get; init; }
         public string Service { get; init; }
-        public object? Payload { get; init; }
+        public string? Payload { get; init; }
         public DateTime Timestamp { get; init; }
         public string Level { get; init; }
         public string Endpoint { get; init; }
