@@ -28,13 +28,15 @@ namespace WalletCore.Controllers
 
         private async Task<Response<T>> HandleRequestAsync<T>(object request, Func<Task<T>> func)
         {
-            var path = HttpContext.Request.Path.Value;
-
-            _logger.LogRequestExt("Request to WalletCore", request);
+            _logger.LogInformation("Request to WalletCore", b => b
+                .WithPayload(request)
+                .WithDirection(LogDirection.Inbound.ToString()));
 
             var response = await _exceptionHandler.HandleAsync(func);
 
-            _logger.LogResponseExt("Response From WalletCore", response);
+            _logger.LogInformation("Response from WalletCore", b => b
+                .WithPayload(response)
+                .WithDirection(LogDirection.Outbound.ToString()));
 
             return response;
         }

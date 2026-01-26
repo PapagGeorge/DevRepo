@@ -19,12 +19,12 @@ namespace WalletCore.Application.Services
 
         public async Task<List<ExchangeRate>> GetDailyRatesAsync(CancellationToken ct = default)
         {
-            _logger.LogInfoExt("Fetching latest exchange rates from ECB");
+            _logger.LogInformation("Fetching latest exchange rates from ECB");
 
             var xml = await _ecbClient.GetXmlAsync<GesmesEnvelope>("/stats/eurofxref/eurofxref-daily.xml", ct);
             var response = xml.ParseRates();
 
-            _logger.LogInfoExt("Successfully fetched exchange rates");
+            _logger.LogInformation("Successfully fetched exchange rates");
             return response;
         }
     }

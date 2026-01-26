@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="WalletCore.Contracts" Version="2.0.1" />
-    <PackageReference Include="WalletCore.Logging" Version="1.0.0" />
+    <PackageReference Include="WalletCore.Logging" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
   </ItemGroup>
 

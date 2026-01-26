@@ -28,15 +28,15 @@ namespace WalletCore.Application.Services
                 var json = await _cache.GetStringAsync(CacheKey);
                 if (!string.IsNullOrEmpty(json))
                 {
-                    _logger.LogInfoExt("Cache hit: returning ECB rates from Redis.");
+                    _logger.LogInformation("Cache hit: returning ECB rates from Redis.");
                     var cachedRates = JsonSerializer.Deserialize<List<ExchangeRate>>(json);
-                    _logger.LogInfoExt("ECB rates retrieved from cache", b => b.WithPayload(cachedRates));
+                    _logger.LogInformation("ECB rates retrieved from cache", b => b.WithPayload(cachedRates));
                     return cachedRates;
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogInfoExt("Cache miss: fetching ECB rates from API.");
+                _logger.LogInformation("Cache miss: fetching ECB rates from API.");
             }
 
             var exchanggeRates = await _inner.GetDailyRatesAsync(); // Call API
@@ -49,12 +49,12 @@ namespace WalletCore.Application.Services
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2)
                 }, ct);
 
-                _logger.LogInfoExt("ECB rates cached successfully", b =>
-                    b.WithPayload(exchanggeRates));
+                _logger.LogInformation("ECB rates cached successfully", b => b.WithPayload(exchanggeRates));
             }
             catch (Exception ex)
             {
-                _logger.LogWarningExt("Failed to write ECB rates to cache.", ex);
+                _logger.LogWarning("Failed to write ECB rates to cache.", ex, b => b
+                    .WithPayload(new { CacheKey }));
             }
 
             return exchanggeRates;

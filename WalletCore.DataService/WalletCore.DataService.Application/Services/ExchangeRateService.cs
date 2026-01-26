@@ -26,17 +26,15 @@ namespace WalletCore.DataService.Application.Services
             IEnumerable<ExchangeRate> rates,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogInfoExt(
-                "Merging exchange rates",
-                enrich: b => b.WithPayload(new { Count = rates.Count() }));
+            _logger.LogInformation("Merging exchange rates", b => b.WithPayload(new { Count = rates.Count() }));
 
             await _repository.MergeRatesAsync(rates, cancellationToken);
 
-            _logger.LogInfoExt("Exchange rates merged to database successfully");
+            _logger.LogInformation("Exchange rates merged to database successfully");
 
             await _cacheService.UpdateExchangeRatesAsync(rates, cancellationToken);
 
-            _logger.LogInfoExt("Exchange rates cache updated successfully");
+            _logger.LogInformation("Exchange rates cache updated successfully");
         }
     }
 }

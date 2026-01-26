@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Data;
@@ -23,17 +23,12 @@ namespace WalletCore.DataService.Repositories.Repositorues
         }
 
         public async Task MergeRatesAsync(
-        IEnumerable<ExchangeRate> rates,
-        CancellationToken cancellationToken = default)
+            IEnumerable<ExchangeRate> rates,
+            CancellationToken cancellationToken = default)
         {
             try
             {
-                _logger.LogInfoExt(
-                    "Merging exchange rates",
-                    enrich: b => b.WithPayload(new
-                    {
-                        Count = rates.Count()
-                    }));
+                _logger.LogInformation("Merging exchange rates", b => b.WithPayload(new { Count = rates.Count() }));
 
                 var table = new DataTable();
                 table.Columns.Add("Id", typeof(Guid));
@@ -63,19 +58,11 @@ namespace WalletCore.DataService.Repositories.Repositorues
                     new[] { param },
                     cancellationToken: cancellationToken);
 
-                _logger.LogInfoExt(
-                    "Exchange rates merged successfully",
-                    enrich: b => b.WithPayload(new
-                    {
-                        Rows = table.Rows.Count
-                    }));
+                _logger.LogInformation("Exchange rates merged successfully", b => b.WithPayload(new { Rows = table.Rows.Count }));
             }
             catch (Exception ex)
             {
-                _logger.LogErrorExt(
-                    "Failed to merge exchange rates",
-                    ex);
-
+                _logger.LogError("Failed to merge exchange rates", ex, b => b.WithPayload(new { Count = rates.Count() }));
                 throw;
             }
         }

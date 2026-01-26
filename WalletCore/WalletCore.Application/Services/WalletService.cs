@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using WalletCore.Application.Interfaces;
 using WalletCore.Contracts.AdjustBalance;
 using WalletCore.Contracts.CreateWallet;
@@ -16,41 +16,49 @@ namespace WalletCore.Application.Services
         private readonly IWalletBalanceStrategyFactory _strategyFactory;
         private readonly IEcbRateConverter _rateConverter;
         private readonly IWalletDataServiceHttpClient _walletDataServiceHttpClient;
-        private readonly WalletServiceLogger _log;
+        private readonly ILogger<WalletService> _logger;
 
         public WalletService(
             IWalletBalanceStrategyFactory strategyFactory,
             IEcbRateConverter rateConverter,
             IWalletDataServiceHttpClient walletDataServiceHttpClient,
-            WalletServiceLogger log)
+            ILogger<WalletService> logger)
         {
             _strategyFactory = strategyFactory;
             _rateConverter = rateConverter;
             _walletDataServiceHttpClient = walletDataServiceHttpClient;
-            _log = log;
+            _logger = logger;
         }
 
         public async Task<CreateWalletResponse> CreateWalletAsync(CreateWalletRequest request)
         {
-            _log.LogCreatingWallet(request);
+            _logger.LogInformation("Creating wallet", b => b.WithPayload(request));
+
             try
             {
                 var response = await _walletDataServiceHttpClient.CreateWalletAsync(request);
 
-                _log.LogWalletCreated(new Wallet { Id = response.WalletId, Balance = 0, Currency = request.Currency });
+                _logger.LogInformation("Wallet created successfully", b => b.WithPayload(new
+                {
+                    WalletId = response.WalletId,
+                    Currency = request.Currency
+                }));
 
                 return response;
             }
             catch (Exception ex)
             {
-                _log.LogWalletCreationFailed(new Wallet { Currency = request.Currency }, ex);
+                _logger.LogError("Wallet creation failed", ex, b => b.WithPayload(new
+                {
+                    Currency = request.Currency
+                }));
                 throw;
             }
         }
 
         public async Task<GetBalanceResponse> GetBalanceAsync(GetBalanceRequest request)
         {
-            _log.LogFetchingBalance(request);
+            _logger.LogInformation("Fetching wallet balance", b => b.WithPayload(request));
 
             var wallet = await _walletDataServiceHttpClient.GetWalletByIdAsync(request.WalletId)
                 ?? throw new WalletException.WalletNotFoundException(request.WalletId);
@@ -61,7 +69,12 @@ namespace WalletCore.Application.Services
 
             if (string.Equals(wallet.Currency, targetCurrency, StringComparison.OrdinalIgnoreCase))
             {
-                _log.LogBalanceWithoutConversion(wallet);
+                _logger.LogInformation("Returning balance without conversion", b => b.WithPayload(new
+                {
+                    wallet.Id,
+                    wallet.Balance,
+                    wallet.Currency
+                }));
 
                 return new GetBalanceResponse
                 {
@@ -71,7 +84,13 @@ namespace WalletCore.Application.Services
                 };
             }
 
-            _log.LogBalanceConversion(wallet, targetCurrency);
+            _logger.LogInformation("Converting wallet balance", b => b.WithPayload(new
+            {
+                wallet.Id,
+                Amount = wallet.Balance,
+                FromCurrency = wallet.Currency,
+                ToCurrency = targetCurrency
+            }));
 
             var conversion = await _rateConverter.ConvertAsync(new CurrencyConversionRequest
             {
@@ -85,7 +104,13 @@ namespace WalletCore.Application.Services
                 2,
                 MidpointRounding.AwayFromZero);
 
-            _log.LogBalanceWithConversion(wallet, convertedBalance, targetCurrency);
+            _logger.LogInformation("Balance converted successfully", b => b.WithPayload(new
+            {
+                wallet.Id,
+                OriginalBalance = wallet.Balance,
+                ConvertedBalance = convertedBalance,
+                Currency = targetCurrency
+            }));
 
             return new GetBalanceResponse
             {
@@ -95,20 +120,16 @@ namespace WalletCore.Application.Services
             };
         }
 
-
         public async Task<AdjustBalanceResponse> AdjustBalanceAsync(AdjustBalanceRequest request)
         {
-            _log.LogAdjustBalanceRequest(request);
+            _logger.LogInformation("Adjusting wallet balance", b => b.WithPayload(request));
 
             var wallet = await _walletDataServiceHttpClient.GetWalletByIdAsync(request.WalletId)
                 ?? throw new WalletException.WalletNotFoundException(request.WalletId);
 
             var oldBalance = wallet.Balance;
 
-            _log.LogWalletLoadedForAdjustment(wallet);
-
             var strategy = _strategyFactory.Create(request.AdjustmentStrategy);
-            _log.LogApplyingStrategy(request);
 
             var conversion = await _rateConverter.ConvertAsync(new CurrencyConversionRequest
             {
@@ -125,7 +146,6 @@ namespace WalletCore.Application.Services
             };
 
             var walletAdjustmentResult = strategy.Apply(walletAdjustmentOperation);
-            _log.LogBalanceCalculated(wallet, oldBalance, conversion.ConvertedAmount, walletAdjustmentResult.NewBalance, request.AdjustmentStrategy);
 
             var walletDataRequest = new AdjustBalanceRequestDto
             {
@@ -139,7 +159,15 @@ namespace WalletCore.Application.Services
             var roundedNewBalance = Math.Round(result.NewBalance, 2, MidpointRounding.AwayFromZero);
             var roundedAppliedAmount = Math.Round(conversion.ConvertedAmount, 2, MidpointRounding.AwayFromZero);
 
-            _log.LogBalanceAdjusted(result.WalletId, roundedOldBalance, roundedNewBalance, roundedAppliedAmount, result.WalletCurrency, request.AdjustmentStrategy);
+            _logger.LogInformation("Wallet balance adjusted successfully", b => b.WithPayload(new
+            {
+                WalletId = result.WalletId,
+                OldBalance = roundedOldBalance,
+                NewBalance = roundedNewBalance,
+                AppliedAmount = roundedAppliedAmount,
+                WalletCurrency = result.WalletCurrency,
+                Strategy = request.AdjustmentStrategy
+            }));
 
             return new AdjustBalanceResponse
             {

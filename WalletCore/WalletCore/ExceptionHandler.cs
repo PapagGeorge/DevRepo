@@ -23,7 +23,8 @@ namespace WalletCore
             }
             catch (Exception ex) when (_businessExceptions.Any(t => t.IsInstanceOfType(ex)))
             {
-                _logger.LogWarningExt("Business exception", ex);
+                _logger.LogWarning("Business exception", ex, b => b
+                    .WithPayload(new { ExceptionType = ex.GetType().Name }));
 
                 return new Response<T>
                 {
@@ -37,7 +38,8 @@ namespace WalletCore
             }
             catch (Exception ex)
             {
-                _logger.LogErrorExt("Technical exception", ex);
+                _logger.LogError("Technical exception", ex, b => b
+                    .WithPayload(new { ExceptionType = ex.GetType().Name }));
 
                 return new Response<T>
                 {

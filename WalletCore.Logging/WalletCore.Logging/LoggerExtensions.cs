@@ -5,103 +5,94 @@ namespace WalletCore.Logging
 {
     public static class LoggerExtensions
     {
-        public static void LogErrorExt(
+        /// <summary>
+        /// Logs an informational message with optional structured enrichment.
+        /// </summary>
+        public static void LogInformation(
             this ILogger logger,
             string message,
-            Exception? exception = null,
-            Action<GlobalLogBuilder>? enrich = null)
+            Action<GlobalLogBuilder> enrich)
         {
             var builder = CreateBaseBuilder()
-                .WithLevel(LogLevelExt.Error.ToString())
+                .WithLevel(LogLevel.Information.ToString())
+                .WithMessage(message);
+
+            enrich.Invoke(builder);
+
+            var log = builder.Build();
+            logger.LogInformation("{@GlobalLog}", log);
+        }
+
+        /// <summary>
+        /// Logs a warning message with optional exception and structured enrichment.
+        /// </summary>
+        public static void LogWarning(
+            this ILogger logger,
+            string message,
+            Exception? exception,
+            Action<GlobalLogBuilder> enrich)
+        {
+            var builder = CreateBaseBuilder()
+                .WithLevel(LogLevel.Warning.ToString())
                 .WithMessage(message)
                 .WithException(exception);
 
-            enrich?.Invoke(builder);
+            enrich.Invoke(builder);
+
+            var log = builder.Build();
+            logger.LogWarning(exception, "{@GlobalLog}", log);
+        }
+
+        /// <summary>
+        /// Logs a warning message with structured enrichment.
+        /// </summary>
+        public static void LogWarning(
+            this ILogger logger,
+            string message,
+            Action<GlobalLogBuilder> enrich)
+        {
+            LogWarning(logger, message, null, enrich);
+        }
+
+        /// <summary>
+        /// Logs an error message with optional exception and structured enrichment.
+        /// </summary>
+        public static void LogError(
+            this ILogger logger,
+            string message,
+            Exception? exception,
+            Action<GlobalLogBuilder> enrich)
+        {
+            var builder = CreateBaseBuilder()
+                .WithLevel(LogLevel.Error.ToString())
+                .WithMessage(message)
+                .WithException(exception);
+
+            enrich.Invoke(builder);
 
             var log = builder.Build();
             logger.LogError(exception, "{@GlobalLog}", log);
         }
 
-        public static void LogInfoExt(
+        /// <summary>
+        /// Logs an error message with structured enrichment.
+        /// </summary>
+        public static void LogError(
             this ILogger logger,
             string message,
-            Action<GlobalLogBuilder>? enrich = null)
+            Action<GlobalLogBuilder> enrich)
         {
-            var builder = CreateBaseBuilder()
-                .WithLevel(LogLevelExt.Information.ToString())
-                .WithMessage(message);
-
-            enrich?.Invoke(builder);
-
-            var log = builder.Build();
-
-            logger.LogInformation("{@GlobalLog}", log);
+            LogError(logger, message, null, enrich);
         }
 
-        public static void LogWarningExt(
-            this ILogger logger,
-            string message,
-            Exception? exception = null,
-            Action<GlobalLogBuilder>? enrich = null)
-        {
-            var builder = CreateBaseBuilder()
-                .WithLevel(LogLevelExt.Warning.ToString())
-                .WithMessage(message)
-                .WithException(exception);
-
-            enrich?.Invoke(builder);
-
-            var log = builder.Build();
-
-            logger.LogWarning("{@GlobalLog}", log);
-        }
-
-        public static void LogRequestExt(
-            this ILogger logger,
-            string message,
-            object? payload,
-            Action<GlobalLogBuilder>? enrich = null)
-        {
-            var builder = CreateBaseBuilder()
-                .WithLevel(LogLevelExt.Information.ToString())
-                .WithDirection(LogDirection.Inbound.ToString())
-                .WithMessage(message)
-                .WithPayload(payload);
-
-            enrich?.Invoke(builder);
-
-            var log = builder.Build();
-
-            logger.LogInformation("{@GlobalLog}", log);
-        }
-
-        public static void LogResponseExt(
-            this ILogger logger,
-            string message,
-            object? payload,
-            Action<GlobalLogBuilder>? enrich = null)
-        {
-            var builder = CreateBaseBuilder()
-                .WithLevel(LogLevelExt.Information.ToString())
-                .WithDirection(LogDirection.Outbound.ToString())
-                .WithMessage(message)
-                .WithPayload(payload);
-
-            enrich?.Invoke(builder);
-
-            var log = builder.Build();
-
-            logger.LogInformation("{@GlobalLog}", log);
-        }
-
-        public static GlobalLogBuilder CreateBaseBuilder()
+        private static GlobalLogBuilder CreateBaseBuilder()
         {
             var http = HttpAccessor.Accessor?.HttpContext;
             var transactionId = http?.Items["TransactionId"]?.ToString();
             var endpoint = http?.Request?.Path.Value;
             var assemblyName = Assembly.GetEntryAssembly()?.GetName().Name;
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            
+
             return new GlobalLogBuilder()
                 .WithService(assemblyName)
                 .WithEnvironment(environment)
@@ -110,6 +101,5 @@ namespace WalletCore.Logging
         }
     }
 
-    public enum LogLevelExt { Information, Warning, Error }
     public enum LogDirection { Inbound, Outbound }
 }

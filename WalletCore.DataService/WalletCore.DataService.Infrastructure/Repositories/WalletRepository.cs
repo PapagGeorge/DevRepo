@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WalletCore.Logging;
 using WalletCore.DataService.Application.Interfaces.Repositories;
@@ -6,7 +6,6 @@ using WalletCore.DataService.Infrastructure;
 using WalletCore.Contracts.DBModels;
 
 namespace WalletCore.DataService.Repositories.Repositorues
-
 {
     public class WalletRepository : IWalletRepository
     {
@@ -27,10 +26,7 @@ namespace WalletCore.DataService.Repositories.Repositorues
 
             if (wallet == null)
             {
-                _logger.LogWarningExt(
-                    "Wallet not found",
-                    enrich: b => b.WithPayload(new { WalletId = id }));
-
+                _logger.LogWarning("Wallet not found", b => b.WithPayload(new { WalletId = id }));
                 throw new Exception($"Wallet with id: {id} not found");
             }
 
@@ -44,21 +40,15 @@ namespace WalletCore.DataService.Repositories.Repositorues
                 await _db.Wallets.AddAsync(wallet);
                 await _db.SaveChangesAsync();
 
-                _logger.LogInfoExt(
-                    "Wallet created",
-                    enrich: b => b.WithPayload(new
-                    {
-                        wallet.Id,
-                        wallet.Balance
-                    }));
+                _logger.LogInformation("Wallet created", b => b.WithPayload(new
+                {
+                    wallet.Id,
+                    wallet.Balance
+                }));
             }
             catch (Exception ex)
             {
-                _logger.LogErrorExt(
-                    "Failed to create wallet",
-                    ex,
-                    enrich: b => b.WithPayload(wallet));
-
+                _logger.LogError("Failed to create wallet", ex, b => b.WithPayload(wallet));
                 throw;
             }
         }
@@ -73,27 +63,21 @@ namespace WalletCore.DataService.Repositories.Repositorues
                 _db.Wallets.Update(wallet);
                 await _db.SaveChangesAsync();
 
-                _logger.LogInfoExt(
-                    "Wallet balance updated",
-                    enrich: b => b.WithPayload(new
-                    {
-                        wallet.Id,
-                        OldBalance = oldBalance,
-                        NewBalance = newBalance
-                    }));
+                _logger.LogInformation("Wallet balance updated", b => b.WithPayload(new
+                {
+                    wallet.Id,
+                    OldBalance = oldBalance,
+                    NewBalance = newBalance
+                }));
             }
             catch (Exception ex)
             {
-                _logger.LogErrorExt(
-                    "Failed to update wallet balance",
-                    ex,
-                    enrich: b => b.WithPayload(new
-                    {
-                        wallet.Id,
-                        wallet.Balance,
-                        NewBalance = newBalance
-                    }));
-
+                _logger.LogError("Failed to update wallet balance", ex, b => b.WithPayload(new
+                {
+                    wallet.Id,
+                    wallet.Balance,
+                    NewBalance = newBalance
+                }));
                 throw;
             }
         }

@@ -23,18 +23,14 @@ namespace WalletCore.DataService.Application.Services
 
         public async Task<Wallet?> GetByIdAsync(Guid id)
         {
-            _logger.LogInfoExt(
-                "Getting wallet by id",
-                enrich: b => b.WithPayload(new { WalletId = id }));
+            _logger.LogInformation("Getting wallet by id", b => b.WithPayload(new { WalletId = id }));
 
             return await _walletRepository.GetByIdAsync(id);
         }
 
         public async Task<CreateWalletResponse> CreateWalletAsync(CreateWalletRequest request)
         {
-            _logger.LogInfoExt(
-                "Creating wallet",
-                enrich: b => b.WithPayload(new { Currency = request.Currency }));
+            _logger.LogInformation("Creating wallet", b => b.WithPayload(new { Currency = request.Currency }));
 
             var wallet = new Wallet
             {
@@ -45,9 +41,7 @@ namespace WalletCore.DataService.Application.Services
 
             await _walletRepository.AddAsync(wallet);
 
-            _logger.LogInfoExt(
-                "Wallet created successfully",
-                enrich: b => b.WithPayload(new { WalletId = wallet.Id }));
+            _logger.LogInformation("Wallet created successfully", b => b.WithPayload(new { WalletId = wallet.Id }));
 
             return new CreateWalletResponse
             {
@@ -59,23 +53,19 @@ namespace WalletCore.DataService.Application.Services
 
         public async Task<AdjustBalanceResponse> AdjustBalanceAsync(AdjustBalanceRequestDto request)
         {
-            _logger.LogInfoExt(
-                "Adjusting wallet balance",
-                enrich: b => b.WithPayload(new
-                {
-                    WalletId = request.Wallet.Id,
-                    NewBalance = request.NewBalance
-                }));
+            _logger.LogInformation("Adjusting wallet balance", b => b.WithPayload(new
+            {
+                WalletId = request.Wallet.Id,
+                NewBalance = request.NewBalance
+            }));
 
             await _walletRepository.UpdateBalanceAsync(request.Wallet, request.NewBalance);
 
-            _logger.LogInfoExt(
-                "Wallet balance adjusted successfully",
-                enrich: b => b.WithPayload(new
-                {
-                    WalletId = request.Wallet.Id,
-                    NewBalance = request.NewBalance
-                }));
+            _logger.LogInformation("Wallet balance adjusted successfully", b => b.WithPayload(new
+            {
+                WalletId = request.Wallet.Id,
+                NewBalance = request.NewBalance
+            }));
 
             return new AdjustBalanceResponse
             {
